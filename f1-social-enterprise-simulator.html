@@ -74,41 +74,137 @@
   .kbd{display:inline-block;padding:1px 7px;border-radius:5px;border:1px solid var(--line);
     background:rgba(255,255,255,.06);font-size:11px;margin:0 1px}
 
-  /* ---------- HUD ---------- */
-  #hud{font-variant-numeric:tabular-nums}
-  .hud-top{position:absolute;top:14px;left:0;right:0;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-  .chip{padding:7px 14px;border-radius:10px;background:rgba(6,10,22,.72);border:1px solid var(--line);
-    font-size:13px;letter-spacing:.04em}
-  .chip b{color:var(--cyan)}
-  .chip.gold b{color:var(--gold)}
-  #quizBox{position:absolute;top:64px;left:50%;transform:translateX(-50%);width:min(760px,94vw);
-    background:rgba(6,10,22,.82);border:1px solid rgba(37,231,255,.4);border-radius:16px;padding:12px 14px;
-    box-shadow:0 12px 40px rgba(0,0,0,.6);animation:pop .25s ease}
-  @keyframes pop{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
-  #quizBox .qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  #quizBox .qhead .tag{border-color:rgba(37,231,255,.5);color:var(--cyan)}
-  #quizBox .q{font-size:clamp(14px,1.7vw,18px);font-weight:700;line-height:1.4;margin-bottom:10px;text-align:center}
-  #quizBox .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .opt{padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.05);
-    font-size:13.5px;line-height:1.35;display:flex;gap:8px;align-items:center}
-  .opt .dir{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--pink);white-space:nowrap}
-  .opt.r{flex-direction:row-reverse;text-align:right}
-  .opt.r .dir{color:var(--cyan)}
-  #toast{position:absolute;top:34%;left:50%;transform:translateX(-50%);font-size:clamp(20px,3.4vw,38px);
-    font-weight:800;letter-spacing:.02em;text-shadow:0 6px 30px rgba(0,0,0,.8);white-space:nowrap;text-align:center}
-  #toast small{display:block;font-size:.5em;font-weight:600;opacity:.9;margin-top:6px}
-  .hud-bot{position:absolute;left:18px;bottom:18px;display:flex;gap:14px;align-items:flex-end}
-  .gauge{width:132px}
-  .gauge .v{font-size:40px;font-weight:800;line-height:1;letter-spacing:-.02em}
-  .gauge .u{font-size:11px;color:var(--dim);letter-spacing:.2em}
-  .meter{width:150px}
-  .meter .lb{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);letter-spacing:.1em;margin-bottom:4px}
-  .meter .bar{height:7px}
-  .hud-right{position:absolute;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-  #penalty{padding:8px 14px;border-radius:10px;background:rgba(255,90,90,.18);border:1px solid rgba(255,90,90,.5);
-    color:#ffd2d2;font-weight:700;font-size:13px}
-  #sector{font-size:12px;color:var(--dim);letter-spacing:.12em}
+  /* ---------- HUD (F1 브로드캐스트 스타일) ---------- */
+  #hud{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  #hud .lat{font-family:"Titillium Web",var(--font);letter-spacing:.06em}
 
+  /* 좌상단 : 포지션 박스 */
+  .hud-pos{position:absolute;top:14px;left:16px;width:min(330px,32vw);
+    background:linear-gradient(180deg,rgba(18,22,34,.92),rgba(10,13,22,.92));
+    border-radius:6px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .hud-pos .ph{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 7px}
+  .hud-pos .mark{font-weight:800;font-size:17px;letter-spacing:.02em;
+    background:linear-gradient(92deg,var(--cyan),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hud-pos .pos{font-weight:800;font-size:26px;line-height:1;color:#fff}
+  .hud-pos .pl{background:rgba(255,255,255,.06);padding:5px 14px;font-size:13px;letter-spacing:.1em;color:#c8d6ea}
+  .hud-pos .pl b{color:#fff;font-size:15px}
+  .hud-pos .pr{display:flex;align-items:center;gap:9px;padding:8px 14px;background:rgba(255,255,255,.03);font-size:13px}
+  .hud-pos .pr .n{color:var(--dim);width:12px}
+  .hud-pos .pr .tc{width:4px;height:15px;border-radius:2px;background:var(--cyan)}
+  .hud-pos .pr b{flex:1;font-weight:700;letter-spacing:.04em}
+  .hud-pos .pr em{font-style:normal;color:#dbe6f6}
+
+  /* 상단 중앙 : 딜타 그래프 */
+  .hud-delta{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:236px;text-align:center}
+  .hud-delta canvas{width:236px;height:80px;display:block;border-radius:5px}
+  .hud-delta .lapbadge{position:absolute;top:-2px;left:50%;transform:translate(-50%,-100%);
+    background:#12161f;border:1.5px solid var(--gold);color:var(--gold);font-weight:800;font-size:12px;
+    padding:2px 9px;border-radius:4px;display:none}
+  .hud-delta .flag{width:26px;height:20px;margin:0 auto;background:rgba(10,13,22,.9);
+    border-radius:0 0 4px 4px;font-size:12px;line-height:20px}
+
+  /* 우상단 : 타이머 · 정보 */
+  .hud-timer{position:absolute;top:12px;right:16px;background:#e8283c;color:#fff;font-weight:800;
+    font-size:19px;padding:5px 12px;border-radius:5px;display:flex;align-items:center;gap:8px;
+    box-shadow:0 8px 22px rgba(232,40,60,.35)}
+  .hud-info{position:absolute;top:58px;right:16px;width:min(320px,32vw);border-radius:6px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .hud-info .r1{display:flex;align-items:baseline;gap:6px;padding:8px 14px;
+    background:linear-gradient(180deg,rgba(18,22,34,.94),rgba(10,13,22,.94));font-size:14px;color:#c8d6ea}
+  .hud-info .r1 b{font-size:20px;color:#fff;font-weight:800}
+  .hud-info .r1 em{margin-left:auto;font-style:normal;color:#fff;font-size:15px}
+  .hud-info .r2{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:13px;color:#eaf7ef;
+    background:repeating-linear-gradient(115deg,rgba(28,130,80,.95) 0 9px,rgba(22,110,68,.95) 9px 18px)}
+  .hud-info .r2.slow{background:repeating-linear-gradient(115deg,rgba(170,40,52,.95) 0 9px,rgba(146,32,44,.95) 9px 18px)}
+  .hud-info .r2 b{margin-left:auto;font-size:17px;font-weight:800}
+
+  /* 우측 : 타깃 */
+  .hud-targets{position:absolute;top:150px;right:16px;text-align:right}
+  .hud-targets .tt{font-size:15px;font-weight:800;letter-spacing:.14em;color:#e6eefb;
+    text-shadow:0 2px 10px rgba(0,0,0,.8);margin-bottom:6px}
+  .hud-targets .chip{display:inline-flex;align-items:center;gap:8px;background:rgba(10,13,22,.85);
+    border-radius:5px;padding:5px 11px;font-size:14px;color:#fff}
+  .hud-targets .chip i{width:16px;height:16px;border-radius:50%;border:2px solid var(--green);font-style:normal}
+
+  /* 좌하단 : 임팩트 부스트 */
+  .hud-boosts{position:absolute;left:16px;bottom:16px;width:min(300px,30vw)}
+  .hud-boosts .bt{font-size:12.5px;font-weight:800;letter-spacing:.12em;color:#dbe6f6;
+    text-shadow:0 2px 10px rgba(0,0,0,.9);margin-bottom:5px}
+  .hud-boosts .bi{padding:5px 12px;font-size:13px;color:#c9d7ea;background:rgba(10,13,22,.55)}
+  .hud-boosts .bi.on{background:var(--green);color:#04231a;font-weight:700;
+    display:flex;justify-content:space-between;align-items:center}
+
+  /* 문제 : 상단 중앙 문제바 + 양쪽 끝 선지 */
+  #qBar{position:absolute;top:104px;left:50%;transform:translateX(-50%);width:min(620px,46vw);
+    background:rgba(6,10,20,.86);border:1px solid rgba(37,231,255,.35);border-radius:8px;
+    padding:9px 14px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.6);animation:qin .22s ease}
+  @keyframes qin{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+  #qBar .meta{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:5px}
+  #qBar .lvl{font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;color:#04121a}
+  #qBar .rw{font-size:11.5px;font-weight:800;color:var(--gold)}
+  #qBar .dist{font-size:11px;color:var(--dim)}
+  #qBar .qt{font-size:clamp(14px,1.55vw,18px);font-weight:700;line-height:1.35}
+
+  .edge-opt{position:absolute;top:41%;width:min(272px,23vw);padding:12px 14px;
+    background:rgba(6,10,20,.85);box-shadow:0 12px 34px rgba(0,0,0,.55);animation:qin .22s ease}
+  .edge-opt.left {left:0;  border-radius:0 12px 12px 0;border:1px solid rgba(255,45,149,.55);border-left:0;
+    border-right:4px solid var(--pink);text-align:left}
+  .edge-opt.right{right:0; border-radius:12px 0 0 12px;border:1px solid rgba(37,231,255,.55);border-right:0;
+    border-left:4px solid var(--cyan);text-align:right}
+  .edge-opt .ar{font-size:22px;font-weight:800;line-height:1}
+  .edge-opt.left .ar{color:var(--pink)}
+  .edge-opt.right .ar{color:var(--cyan)}
+  .edge-opt .tx{font-size:clamp(13px,1.35vw,16px);font-weight:700;line-height:1.35;margin:5px 0 4px}
+  .edge-opt .lb{font-size:11px;letter-spacing:.1em;color:var(--dim)}
+  .edge-opt.aim{background:rgba(14,26,44,.95);transform:scale(1.03)}
+  .edge-opt.left.aim {box-shadow:-8px 0 30px rgba(255,45,149,.45),0 12px 34px rgba(0,0,0,.55)}
+  .edge-opt.right.aim{box-shadow: 8px 0 30px rgba(37,231,255,.45),0 12px 34px rgba(0,0,0,.55)}
+  .edge-opt.hit{animation:hit .35s ease}
+  @keyframes hit{0%{filter:brightness(2.2)}100%{filter:brightness(1)}}
+
+  #toast{position:absolute;top:30%;left:50%;transform:translateX(-50%);font-size:clamp(20px,3.2vw,36px);
+    font-weight:800;text-shadow:0 6px 30px rgba(0,0,0,.9);white-space:nowrap;text-align:center;pointer-events:none}
+  #toast small{display:block;font-size:.48em;font-weight:600;opacity:.92;margin-top:6px}
+
+  #penalty{position:absolute;left:16px;top:160px;padding:7px 13px;border-radius:6px;
+    background:rgba(255,90,90,.22);border:1px solid rgba(255,90,90,.55);color:#ffd2d2;font-weight:700;font-size:13px}
+  #sector{position:absolute;left:16px;top:200px;font-size:11.5px;color:#a9bcd8;letter-spacing:.1em;
+    text-shadow:0 2px 8px rgba(0,0,0,.9)}
+  #penalty.hidden + #sector{top:160px}
+  #hud.pit .hud-delta,#hud.pit .hud-targets,#hud.pit .hud-boosts,#hud.pit #penalty,#hud.pit #sector{display:none}
+  #hud.pit #toast{top:auto;bottom:20px}
+
+  /* 터치 컨트롤 */
+  #touch{position:absolute;inset:0;display:none;justify-content:space-between;align-items:flex-end;padding:16px}
+  #touch .side{display:flex;gap:10px}
+  .tbtn{width:70px;height:70px;border-radius:50%;background:rgba(10,16,32,.55);border:1px solid var(--line);
+    font-size:24px;display:flex;align-items:center;justify-content:center}
+  .tbtn:active{background:rgba(37,231,255,.3)}
+  body.touch #touch{display:flex}
+  body.touch .hud-boosts{display:none}
+
+  @media (max-width:860px){
+    .hud-pos{width:168px} .hud-pos .pos{font-size:19px} .hud-pos .mark{font-size:12px}
+    .hud-pos .pl,.hud-pos .pr{font-size:11.5px;padding:5px 10px}
+    .hud-info{width:176px;top:50px} .hud-info .r1{font-size:12px;padding:6px 10px} .hud-info .r1 b{font-size:15px}
+    .hud-info .r2{font-size:11px;padding:5px 10px} .hud-info .r2 b{font-size:13px}
+    .hud-timer{font-size:15px;padding:4px 9px}
+    .hud-targets{top:132px} .hud-targets .tt{font-size:12px} .hud-targets .chip{font-size:12px}
+    .hud-delta{width:150px} .hud-delta canvas{width:150px;height:52px}
+    #qBar{top:92px;width:min(88vw,560px);padding:7px 10px}
+    #qBar .qt{font-size:13.5px}
+    .edge-opt{width:38vw;padding:9px 10px;top:38%}
+    .edge-opt .tx{font-size:12.5px}
+    .edge-opt .lb{font-size:9.5px}
+    #toast{font-size:19px;top:26%}
+    .hud-boosts{display:none}
+  }
+  @media (max-width:620px){
+    .hud-delta,.hud-targets{display:none}
+    #qBar{top:126px}
+    #sector{top:auto;bottom:104px;left:16px}
+    #penalty{top:auto;bottom:132px;left:16px}
+  }
   /* ---------- 오버레이 (도움말/결과) ---------- */
   .modal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     background:rgba(3,5,12,.78);backdrop-filter:blur(4px);padding:20px}
@@ -135,9 +231,6 @@
   @media (max-width:620px){
     .hud-top{gap:6px;top:10px}
     .chip{padding:5px 9px;font-size:11px}
-    #quizBox{top:92px;padding:10px 11px}
-    #quizBox .q{font-size:14px;margin-bottom:8px}
-    #quizBox .opts{gap:7px}
     .opt{font-size:11.5px;padding:8px 9px;flex-direction:column;align-items:flex-start;gap:3px}
     .opt.r{align-items:flex-end;text-align:right}
     #toast{font-size:20px;top:44%}
@@ -205,44 +298,56 @@
     </div>
   </section>
 
-  <!-- ============ 주행 HUD (1인칭) ============ -->
+  <!-- ============ 주행 HUD (1인칭 콕핏) ============ -->
   <section id="hud" class="screen hidden">
-    <div class="hud-top">
-      <div class="chip">LAP <b id="hLap">1/3</b></div>
-      <div class="chip">TIME <b id="hTime">0.000</b></div>
-      <div class="chip">LAST <b id="hLast">--</b></div>
-      <div class="chip gold">🪙 <b id="hCoin">0</b></div>
-      <div class="chip">COMBO <b id="hCombo">0</b></div>
+    <!-- 좌상단 : 포지션 -->
+    <div class="hud-pos">
+      <div class="ph"><span class="mark">IMPACT</span><span class="pos lat" id="hPos">P1</span></div>
+      <div class="pl lat">LAP <b id="hLapN">1</b> / <span id="hLapT">3</span></div>
+      <div class="pr"><span class="n" id="hPosN">1</span><i class="tc"></i>
+        <b>사회적기업 레이싱팀</b><em id="hLapTime">0.000</em></div>
     </div>
 
-    <div id="quizBox" class="hidden">
-      <div class="qhead">
-        <span class="tag">사회적기업 상식 · 추월 방향을 고르세요</span>
-        <span class="tag" id="qDist">120 m</span>
-      </div>
-      <div class="q" id="qText"></div>
-      <div class="opts">
-        <div class="opt l"><span class="dir">◀ 왼쪽 추월</span><span id="optL"></span></div>
-        <div class="opt r"><span class="dir">오른쪽 추월 ▶</span><span id="optR"></span></div>
-      </div>
+    <!-- 상단 중앙 : 타임 딜타 그래프 -->
+    <div class="hud-delta">
+      <span class="lapbadge" id="hLapBadge">L1</span>
+      <canvas id="deltaCv" width="472" height="160"></canvas>
+      <div class="flag">🏁</div>
     </div>
+
+    <!-- 우상단 : 총 시간 · 퀴즈/딜타 -->
+    <div class="hud-timer lat"><span id="hTimer">0:00</span> ⏱</div>
+    <div class="hud-info">
+      <div class="r1 lat"><b id="hQn">0</b><span>/ <span id="hQt">0</span></span><em id="hLapTime2">0.000</em></div>
+      <div class="r2" id="hDeltaRow"><span>⏱ Time Delta</span><b id="hDelta">-0.000 Sec.</b></div>
+    </div>
+
+    <!-- 우측 : 목표 -->
+    <div class="hud-targets">
+      <div class="tt lat">TARGETS</div>
+      <div class="chip lat"><i></i><b id="hTarget">1:20.000</b></div>
+    </div>
+
+    <!-- 좌하단 : 임팩트 부스트 -->
+    <div class="hud-boosts">
+      <div class="bt lat">IMPACT BOOSTS · 임팩트 부스트</div>
+      <div id="boostList"></div>
+    </div>
+
+    <!-- 문제 : 상단 문제바 + 양쪽 끝 선지 -->
+    <div id="qBar" class="hidden">
+      <div class="meta"><span class="lvl" id="qLvl">중급</span><span class="rw" id="qRw">+170</span>
+        <span class="dist" id="qDist">120 m</span></div>
+      <div class="qt" id="qText"></div>
+    </div>
+    <div id="optLeft" class="edge-opt left hidden">
+      <div class="ar">◀</div><div class="tx" id="optL"></div><div class="lb">왼쪽으로 추월</div></div>
+    <div id="optRight" class="edge-opt right hidden">
+      <div class="ar">▶</div><div class="tx" id="optR"></div><div class="lb">오른쪽으로 추월</div></div>
 
     <div id="toast"></div>
-
-    <div class="hud-bot">
-      <div class="gauge">
-        <div class="v"><span id="hSpeed">0</span></div>
-        <div class="u">KM/H · <span id="hGear">N</span>단</div>
-      </div>
-      <div class="meter">
-        <div class="lb"><span>TYRE · 공정무역</span><span id="hTyreV">100%</span></div>
-        <div class="bar"><i id="hTyre" style="width:100%"></i></div>
-      </div>
-    </div>
-    <div class="hud-right">
-      <div id="penalty" class="hidden">⚠ 오답 페널티 <span id="penT">3.0</span>s</div>
-      <div id="sector">START / FINISH</div>
-    </div>
+    <div id="penalty" class="hidden">⚠ 오답 페널티 <span id="penT">3.0</span>s</div>
+    <div id="sector">KOVAL LANE · 스타트/피니시</div>
 
     <div id="touch">
       <div class="side">
@@ -282,54 +387,115 @@ const fmtTime=(s)=>{ if(!isFinite(s)||s<=0) return "--:--.---";
   return (m>0? m+":"+(r<10?"0":"") : "") + r.toFixed(3); };
 
 /* ------------------------------ 문제 은행 ------------------------------
-   correct = 정답 지문, wrong = 오답 지문 (좌/우 배치는 매번 무작위)      */
+   d : 난이도 1(초급) / 2(중급) / 3(고급)  → 난이도가 높을수록 코인이 큽니다.
+   correct = 정답 지문, wrong = 오답 지문 (좌/우 배치는 매번 무작위)          */
+const TIER = {
+  1:{name:"초급", coin: 80, col:"#3ce08f"},
+  2:{name:"중급", coin:170, col:"#ffc83d"},
+  3:{name:"고급", coin:300, col:"#ff5a9e"}
+};
 const QUESTIONS = [
-  {q:"사회적기업 인증을 총괄하는 기관은?", correct:"한국사회적기업진흥원", wrong:"한국거래소"},
-  {q:"「사회적기업 육성법」이 제정된 해는?", correct:"2007년", wrong:"1997년"},
-  {q:"사회적기업이 가장 우선하는 목적은?", correct:"사회적 가치 실현", wrong:"주주 이익 극대화"},
-  {q:"사회적기업 인증을 담당하는 정부 부처는?", correct:"고용노동부", wrong:"국토교통부"},
-  {q:"인증 사회적기업은 이윤의 얼마 이상을 사회적 목적에 재투자해야 할까?", correct:"3분의 2 이상", wrong:"10분의 1 이상"},
-  {q:"일자리제공형 사회적기업의 취약계층 고용 비율 기준은?", correct:"전체 근로자의 30% 이상", wrong:"전체 근로자의 3% 이상"},
-  {q:"공정무역(Fair Trade)의 핵심 원칙은?", correct:"생산자에게 정당한 대가 지급", wrong:"최저가 입찰 낙찰"},
-  {q:"협동조합기본법상 일반협동조합 설립 최소 발기인 수는?", correct:"5인 이상", wrong:"30인 이상"},
-  {q:"마을기업이 주로 추구하는 것은?", correct:"지역공동체의 이익과 일자리", wrong:"해외 자본 유치"},
-  {q:"소셜벤처의 특징으로 알맞은 것은?", correct:"혁신 기술로 사회문제 해결", wrong:"단기 시세차익 추구"},
-  {q:"SROI가 측정하는 것은?", correct:"사회적 투자수익률", wrong:"주가수익비율(PER)"},
-  {q:"ESG에서 G가 뜻하는 것은?", correct:"지배구조(Governance)", wrong:"성장(Growth)"},
-  {q:"다음 중 사회적경제 조직에 해당하는 것은?", correct:"사회적협동조합", wrong:"헤지펀드 운용사"},
-  {q:"사회적기업의 의사결정 구조로 요구되는 것은?", correct:"이해관계자가 참여하는 민주적 구조", wrong:"최대주주 단독 결재"},
-  {q:"임팩트 투자란 무엇일까?", correct:"재무수익과 사회적 성과를 함께 추구", wrong:"수익률만을 유일한 기준으로 추구"},
-  {q:"업사이클링(Up-cycling)의 의미는?", correct:"버려진 자원에 새로운 가치를 더함", wrong:"제품을 그대로 소각 처리함"},
-  {q:"공공기관이 사회적기업 제품을 먼저 구매하는 제도는?", correct:"우선구매 제도", wrong:"최저가 낙찰 제도"},
-  {q:"지역사회공헌형 사회적기업의 초점은?", correct:"지역 문제 해결과 주민 참여", wrong:"글로벌 인수합병"},
-  {q:"다음 중 「취약계층」에 해당하는 사람은?", correct:"장기 실업자", wrong:"고소득 전문직 종사자"},
-  {q:"협동조합의 의결권 원칙은?", correct:"출자액과 무관한 1인 1표", wrong:"출자액에 비례한 표결"},
-  {q:"자활기업의 주된 지원 대상은?", correct:"저소득 취약계층", wrong:"대기업 임원"},
-  {q:"사회적 가치 지표(SVI)는 무엇에 쓰일까?", correct:"사회적 성과의 측정과 관리", wrong:"법인세 산출"},
-  {q:"장애인 표준사업장의 핵심 요건은?", correct:"일정 비율 이상 장애인 고용", wrong:"자본금 100억원 이상"},
-  {q:"사회적기업가 정신의 핵심은?", correct:"사회문제 해결을 위한 혁신과 실행", wrong:"경쟁사 인수를 통한 독점"},
-  {q:"윤리적 소비란?", correct:"사회·환경 영향을 고려한 소비", wrong:"가격만 보고 최저가 소비"},
-  {q:"사회적기업의 수익 구조로 옳은 것은?", correct:"영업활동으로 수익을 창출", wrong:"기부금에만 100% 의존"},
+  /* ---------- 초급 (80 코인) ---------- */
+  {d:1,q:"사회적기업이 가장 우선하는 목적은?", correct:"사회적 가치 실현", wrong:"주주 이익 극대화"},
+  {d:1,q:"업사이클링(Up-cycling)의 의미는?", correct:"버려진 자원에 새 가치를 더함", wrong:"제품을 그대로 소각 처리함"},
+  {d:1,q:"공정무역의 핵심 원칙은?", correct:"생산자에게 정당한 대가 지급", wrong:"최저가 입찰 낙찰"},
+  {d:1,q:"윤리적 소비란 무엇일까?", correct:"사회·환경 영향을 고려한 소비", wrong:"가격만 보는 최저가 소비"},
+  {d:1,q:"사회적기업의 기본 수익 구조는?", correct:"영업활동으로 수익 창출", wrong:"기부금에만 100% 의존"},
+  {d:1,q:"협동조합의 의결권 원칙은?", correct:"출자액과 무관한 1인 1표", wrong:"출자액에 비례한 표결"},
+  {d:1,q:"다음 중 사회적경제 조직은?", correct:"사회적협동조합", wrong:"헤지펀드 운용사"},
+  {d:1,q:"마을기업이 추구하는 것은?", correct:"지역공동체 이익과 일자리", wrong:"해외 자본 유치"},
+  {d:1,q:"소셜벤처의 특징으로 알맞은 것은?", correct:"혁신으로 사회문제 해결", wrong:"단기 시세차익 추구"},
+  {d:1,q:"다음 중 「취약계층」에 해당하는 사람은?", correct:"장기 실업자", wrong:"고소득 전문직"},
+  {d:1,q:"ESG에서 E가 뜻하는 것은?", correct:"환경(Environment)", wrong:"경제(Economy)"},
+  {d:1,q:"임팩트 투자란 무엇일까?", correct:"재무수익과 사회적 성과 동시 추구", wrong:"수익률만이 유일한 기준"},
+  {d:1,q:"사회적기업가 정신의 핵심은?", correct:"사회문제 해결을 위한 혁신", wrong:"경쟁사 인수를 통한 독점"},
+  {d:1,q:"자원 순환을 위한 실천으로 옳은 것은?", correct:"재사용·재활용 확대", wrong:"일회용품 사용 확대"},
+  {d:1,q:"사회적기업 제품을 사는 소비를 무엇이라 할까?", correct:"착한 소비(가치 소비)", wrong:"과시 소비"},
+  {d:1,q:"협동조합의 주인은 누구일까?", correct:"조합원", wrong:"최대 출자자 1인"},
+  {d:1,q:"사회적기업의 이익은 어디에 쓰일까?", correct:"사회적 목적에 재투자", wrong:"전액 주주 배당"},
+  {d:1,q:"지역사회공헌형 사회적기업의 초점은?", correct:"지역 문제 해결과 주민 참여", wrong:"글로벌 인수합병"},
+  {d:1,q:"자활기업의 주된 지원 대상은?", correct:"저소득 취약계층", wrong:"대기업 임원"},
+  {d:1,q:"사회적기업에서 「이해관계자」란?", correct:"근로자·소비자·지역주민 등", wrong:"최대주주 한 사람"},
+  {d:1,q:"사회적기업이 만드는 일자리의 특징은?", correct:"취약계층에게 열린 일자리", wrong:"고학력자만 채용"},
+  {d:1,q:"돌봄·간병 같은 서비스를 제공하는 유형은?", correct:"사회서비스제공형", wrong:"부동산투자형"},
+
+  /* ---------- 중급 (170 코인) ---------- */
+  {d:2,q:"사회적기업 인증을 총괄하는 기관은?", correct:"한국사회적기업진흥원", wrong:"한국거래소"},
+  {d:2,q:"사회적기업 인증을 담당하는 정부 부처는?", correct:"고용노동부", wrong:"국토교통부"},
+  {d:2,q:"「사회적기업 육성법」이 제정된 해는?", correct:"2007년", wrong:"1997년"},
+  {d:2,q:"협동조합기본법이 시행된 해는?", correct:"2012년", wrong:"2002년"},
+  {d:2,q:"일반협동조합 설립에 필요한 최소 발기인 수는?", correct:"5인 이상", wrong:"30인 이상"},
+  {d:2,q:"다음 중 사회적기업의 유형은?", correct:"일자리제공형", wrong:"주식배당형"},
+  {d:2,q:"사회적 가치 지표(SVI)의 용도는?", correct:"사회적 성과의 측정과 관리", wrong:"법인세 산출"},
+  {d:2,q:"SROI가 측정하는 것은?", correct:"사회적 투자수익률", wrong:"주가수익비율(PER)"},
+  {d:2,q:"공공기관이 사회적기업 제품을 먼저 사는 제도는?", correct:"우선구매 제도", wrong:"최저가 낙찰 제도"},
+  {d:2,q:"사회적협동조합의 법적 성격은?", correct:"비영리 법인", wrong:"영리 상장회사"},
+  {d:2,q:"ESG에서 G가 뜻하는 것은?", correct:"지배구조(Governance)", wrong:"성장(Growth)"},
+  {d:2,q:"장애인 표준사업장의 핵심 요건은?", correct:"일정 비율 이상 장애인 고용", wrong:"자본금 100억원 이상"},
+  {d:2,q:"크라우드펀딩의 사회적 활용 예는?", correct:"사회적기업 초기 자금 모집", wrong:"무담보 대출 금지"},
+  {d:2,q:"사회적기업에 요구되는 의사결정 구조는?", correct:"이해관계자가 참여하는 구조", wrong:"최대주주 단독 결재"},
+  {d:2,q:"예비사회적기업을 지정하는 주체는?", correct:"시·도지사 또는 중앙부처장", wrong:"세계무역기구(WTO)"},
+  {d:2,q:"사회적기업 인증 요건에 해당하는 것은?", correct:"유급근로자를 고용해 영업활동", wrong:"무급 자원봉사로만 운영"},
+  {d:2,q:"B Corp(비콥) 인증이 평가하는 것은?", correct:"기업의 사회·환경 성과", wrong:"기업의 신용등급"},
+  {d:2,q:"다음 중 사회적경제 조직의 묶음은?", correct:"협동조합·사회적기업·마을기업", wrong:"사모펀드·헤지펀드·PEF"},
+  {d:2,q:"인증 사회적기업의 사후관리 의무는?", correct:"사업보고서 정기 제출", wrong:"별도 의무 없음"},
+  {d:2,q:"사회적기업의 「연계기업」이란?", correct:"사회적기업을 지원하는 기업", wrong:"경쟁 관계의 기업"},
+  {d:2,q:"사회적금융의 예로 알맞은 것은?", correct:"사회적은행·임팩트펀드", wrong:"고금리 대부업"},
+  {d:2,q:"로컬푸드 직매장의 사회적 효과는?", correct:"지역 농가 소득·유통단계 축소", wrong:"수입 농산물 확대"},
+
+  /* ---------- 고급 (300 코인) ---------- */
+  {d:3,q:"인증 사회적기업이 사회적 목적에 재투자해야 할 이윤 비율은?", correct:"3분의 2 이상", wrong:"10분의 1 이상"},
+  {d:3,q:"일자리제공형의 취약계층 고용 비율 기준은?", correct:"전체 근로자의 30% 이상", wrong:"전체 근로자의 3% 이상"},
+  {d:3,q:"사회서비스제공형의 서비스 제공 기준은?", correct:"대상의 30% 이상이 취약계층", wrong:"대상 전원이 일반인"},
+  {d:3,q:"혼합형 사회적기업의 기준으로 옳은 것은?", correct:"고용·서비스 각각 20% 이상", wrong:"고용·서비스 각각 80% 이상"},
+  {d:3,q:"사회적협동조합의 인가권자는?", correct:"관계 중앙행정기관의 장", wrong:"시·군·구청 민원실"},
+  {d:3,q:"사회적 성과 측정에서 「기여도(attribution)」란?", correct:"성과 중 우리 조직의 몫", wrong:"총매출 대비 광고비"},
+  {d:3,q:"사회성과인센티브(SPC)가 보상하는 것은?", correct:"실제 창출한 사회적 성과", wrong:"주가 상승률"},
+  {d:3,q:"UN 지속가능발전목표(SDGs)의 목표 수는?", correct:"17개", wrong:"7개"},
+  {d:3,q:"국제협동조합연맹(ICA) 7원칙에 해당하는 것은?", correct:"지역사회에 대한 기여", wrong:"이윤의 극대화"},
+  {d:3,q:"「고용노동부 인증 사회적기업」 표시를 함부로 쓰면?", correct:"법에 따른 제재 대상", wrong:"누구나 자유롭게 사용 가능"},
+  {d:3,q:"사회적기업의 지속가능성을 높이는 방법은?", correct:"자체 수익모델 강화", wrong:"보조금 의존 확대"},
+  {d:3,q:"협동조합이 배당을 제한하는 이유는?", correct:"자본보다 사람 중심 운영", wrong:"세금 회피를 위해"},
+  {d:3,q:"사회적경제기본법에 대한 설명으로 옳은 것은?", correct:"통합 지원체계를 담은 법안", wrong:"1990년부터 시행 중인 법"},
+  {d:3,q:"사회적기업 육성 전문인력이 지원하는 것은?", correct:"경영·회계 등 전문 역량", wrong:"단순 노무 업무만"},
+  {d:3,q:"사회적기업 판로지원 채널로 알맞은 것은?", correct:"사회적기업 제품 유통 플랫폼", wrong:"증권 파생상품 거래소"},
+  {d:3,q:"사회적기업 인증 시 필요한 조직 형태 요건은?", correct:"법인·조합 등 요건을 갖출 것", wrong:"형태와 무관하게 누구나"},
+  {d:3,q:"이해관계자 참여 구조가 필요한 이유는?", correct:"사회적 목적의 실현을 담보", wrong:"의사결정 속도를 높이려고"},
+  {d:3,q:"사회적기업의 「사회적 목적 실현」 판단 기준은?", correct:"유형별 정량 요건 충족 여부", wrong:"대표자의 선언만으로 충분"},
+  {d:3,q:"임팩트 측정에서 「반사실(counterfactual)」이란?", correct:"개입이 없었을 때의 결과", wrong:"경쟁사의 매출 실적"},
+  {d:3,q:"사회적기업 인증제가 지향하는 최종 목표는?", correct:"자립 가능한 사회적경제 생태계", wrong:"영구적 정부 보조금 지급"},
 ];
+/* 난이도별 문제 풀 (랩이 진행될수록 어려운 문제 비중이 커집니다) */
+const POOL={1:[],2:[],3:[]};
+function shufflePool(d){
+  POOL[d]=QUESTIONS.filter(q=>q.d===d);
+  for(let i=POOL[d].length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));
+    const t=POOL[d][i]; POOL[d][i]=POOL[d][j]; POOL[d][j]=t; }
+}
+function pickTier(lap){
+  const w = lap<=1? [0.55,0.32,0.13] : (lap===2? [0.30,0.42,0.28] : [0.16,0.38,0.46]);
+  const r=Math.random();
+  return r<w[0]? 1 : (r<w[0]+w[1]? 2 : 3);
+}
 
 /* ------------------------------ 업그레이드 ------------------------------ */
 const UPGRADES = [
-  {id:"power", ic:"⚡", name:"재생에너지 파워유닛", stat:"최고속도",
+  {id:"power", ic:"⚡", name:"재생에너지 파워유닛", short:"재생에너지 PU", stat:"최고속도",
    desc:"태양광·폐열 재활용으로 만든 e-퓨얼 파워유닛. 최고속도가 올라갑니다.",
    costs:[220,380,600]},
-  {id:"tyre",  ic:"🛞", name:"공정무역 천연고무 타이어", stat:"코너 그립",
+  {id:"tyre",  ic:"🛞", name:"공정무역 천연고무 타이어", short:"공정무역 타이어", stat:"코너 그립",
    desc:"공정무역 인증 농장의 천연고무. 코너 그립과 타이어 수명이 좋아집니다.",
    costs:[200,340,540]},
-  {id:"aero",  ic:"♻️", name:"업사이클 카본 에어로",  stat:"가속",
+  {id:"aero",  ic:"♻️", name:"업사이클 카본 에어로", short:"업사이클 에어로", stat:"가속",
    desc:"폐카본을 재가공한 경량 바디킷. 가속과 다운포스가 향상됩니다.",
    costs:[240,400,620]},
-  {id:"crew",  ic:"🤝", name:"지역상생 피트크루",     stat:"피트 크루",
+  {id:"crew",  ic:"🤝", name:"지역상생 피트크루", short:"지역상생 크루", stat:"피트 크루",
    desc:"지역 청년을 채용해 훈련한 피트크루. 피트스탑 시간이 짧아집니다.",
    costs:[180,300,480]},
-  {id:"safe",  ic:"🛡️", name:"사회적 안전망 시스템",  stat:"안전망",
+  {id:"safe",  ic:"🛡️", name:"사회적 안전망 시스템", short:"사회적 안전망", stat:"안전망",
    desc:"오답 페널티(3초) 동안의 감속 폭을 줄여 줍니다. 실패해도 다시 달릴 수 있게.",
    costs:[260,420,660]},
-  {id:"spons", ic:"🌱", name:"임팩트 스폰서십",       stat:"코인 획득",
+  {id:"spons", ic:"🌱", name:"임팩트 스폰서십", short:"임팩트 스폰서", stat:"코인 획득",
    desc:"사회적 가치를 알아본 스폰서 유치. 정답 시 획득 코인이 늘어납니다.",
    costs:[300,500,780]},
 ];
@@ -746,128 +912,268 @@ function carLivery(){
 /* =========================================================================
    5. 피트 스탑 화면 (3인칭)  mode: "out"=피트 아웃 / "stop"=타이어 교체
    ========================================================================= */
+/* ---------- 위에서 내려다본 F1 머신 (노즈가 위쪽) ---------- */
+function paintF1Top(cx, cy, L, o){
+  o=o||{};
+  const body=o.body||"#12e0c8", body2=o.body2||"#0b2a52", accent=o.accent||"#ffc83d";
+  const X=(v)=>v*L, Y=(v)=>v*L;
+  ctx.save(); ctx.translate(cx,cy);
+  /* 그림자 (부드럽게) */
+  ctx.save(); ctx.globalAlpha=.45;
+  const sh=ctx.createRadialGradient(X(0.02),Y(0.03),L*0.05,X(0.02),Y(0.03),L*0.44);
+  sh.addColorStop(0,"rgba(0,0,0,.75)"); sh.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=sh; ctx.beginPath();
+  ctx.ellipse(X(0.02),Y(0.03),L*0.30,L*0.50,0,0,6.2832); ctx.fill(); ctx.restore();
+
+  const tyre=(ax)=>{
+    [-1,1].forEach(d=>{
+      ctx.fillStyle="#06080d";
+      rr(d*X(0.158)-X(0.033), Y(ax)-Y(0.072), X(0.066), Y(0.144), X(0.014)); ctx.fill();
+      const tg=ctx.createLinearGradient(d*X(0.158)-X(0.033),0,d*X(0.158)+X(0.033),0);
+      tg.addColorStop(0,"#181c23"); tg.addColorStop(.5,o.tyreCol||"#2a3038"); tg.addColorStop(1,"#181c23");
+      ctx.fillStyle=tg;
+      rr(d*X(0.158)-X(0.029), Y(ax)-Y(0.068), X(0.058), Y(0.136), X(0.012)); ctx.fill();
+      ctx.strokeStyle=o.tyreBand||"#ff3b6b"; ctx.lineWidth=Math.max(2,L*0.007);
+      ctx.beginPath(); ctx.moveTo(d*X(0.158)-X(0.010), Y(ax)-Y(0.058));
+      ctx.lineTo(d*X(0.158)-X(0.010), Y(ax)+Y(0.058)); ctx.stroke();
+      ctx.strokeStyle="rgba(190,215,255,.35)"; ctx.lineWidth=Math.max(1,L*0.003);
+      rr(d*X(0.158)-X(0.033), Y(ax)-Y(0.072), X(0.066), Y(0.144), X(0.014)); ctx.stroke();
+      ctx.fillStyle="rgba(255,255,255,.07)";
+      rr(d*X(0.158)-X(0.026), Y(ax)-Y(0.050), X(0.014), Y(0.100), X(0.006)); ctx.fill();
+    });
+  };
+
+  /* 플로어 · 사이드포드 */
+  const fgr=ctx.createLinearGradient(X(-0.115),0,X(0.115),0);
+  fgr.addColorStop(0,body2); fgr.addColorStop(.40,body); fgr.addColorStop(.60,body); fgr.addColorStop(1,body2);
+  ctx.fillStyle=fgr;
+  rr(X(-0.112), Y(-0.10), X(0.224), Y(0.42), X(0.028)); ctx.fill();
+  /* 바지보드 · 플로어 엣지 */
+  ctx.fillStyle=body2;
+  [-1,1].forEach(d=>{ rr(d>0? X(0.098):X(-0.128), Y(-0.05), X(0.030), Y(0.30), X(0.010)); ctx.fill(); });
+  ctx.fillStyle="rgba(255,255,255,.10)";
+  rr(X(-0.106), Y(-0.06), X(0.212), Y(0.05), X(0.018)); ctx.fill();
+  ctx.fillStyle=accent; ctx.fillRect(X(-0.112), Y(0.29), X(0.224), Y(0.012));
+  /* 사이드포드 인테이크 */
+  ctx.fillStyle="#080c14";
+  [-1,1].forEach(d=>{ rr(d>0? X(0.050):X(-0.112), Y(-0.085), X(0.062), Y(0.05), X(0.012)); ctx.fill(); });
+
+  /* 노즈 */
+  ctx.fillStyle=body2;
+  ctx.beginPath();
+  ctx.moveTo(X(-0.026), Y(-0.44)); ctx.lineTo(X(0.026), Y(-0.44));
+  ctx.lineTo(X(0.088), Y(-0.10)); ctx.lineTo(X(-0.088), Y(-0.10));
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=body; ctx.lineWidth=Math.max(2,L*0.014);
+  ctx.beginPath(); ctx.moveTo(0,Y(-0.42)); ctx.lineTo(0,Y(-0.12)); ctx.stroke();
+  ctx.strokeStyle=accent; ctx.lineWidth=Math.max(1,L*0.005);
+  ctx.beginPath(); ctx.moveTo(0,Y(-0.40)); ctx.lineTo(0,Y(-0.14)); ctx.stroke();
+
+  /* 프론트 윙 */
+  ctx.fillStyle=body2;
+  rr(X(-0.185), Y(-0.50), X(0.37), Y(0.075), X(0.008)); ctx.fill();
+  ctx.fillStyle=accent;
+  rr(X(-0.185), Y(-0.478), X(0.37), Y(0.012), 0); ctx.fill();
+  ctx.fillStyle="#0b1220";
+  [-1,1].forEach(d=>{ rr(d>0? X(0.168):X(-0.185), Y(-0.505), X(0.017), Y(0.085), X(0.004)); ctx.fill(); });
+
+  /* 콕핏 · 헤일로 · 헬멧 */
+  ctx.fillStyle="#080c14"; rr(X(-0.048), Y(-0.135), X(0.096), Y(0.145), X(0.022)); ctx.fill();
+  ctx.strokeStyle="#0e131d"; ctx.lineWidth=Math.max(2,L*0.012);
+  ctx.beginPath(); ctx.ellipse(0, Y(-0.075), X(0.058), Y(0.078), 0, 0, 6.2832); ctx.stroke();
+  ctx.fillStyle="#e9eef7"; ctx.beginPath(); ctx.arc(0, Y(-0.055), X(0.036), 0, 6.2832); ctx.fill();
+  ctx.fillStyle="#141d2e";
+  ctx.beginPath(); ctx.ellipse(0, Y(-0.072), X(0.030), Y(0.016), 0,0,6.2832); ctx.fill();
+  ctx.fillStyle=accent; ctx.fillRect(X(-0.036), Y(-0.048), X(0.072), Y(0.008));
+
+  /* 에어박스 · 엔진커버 */
+  ctx.fillStyle=body2;
+  ctx.beginPath();
+  ctx.moveTo(X(-0.045), Y(0.00)); ctx.lineTo(X(0.045), Y(0.00));
+  ctx.lineTo(X(0.030), Y(0.36)); ctx.lineTo(X(-0.030), Y(0.36));
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle=body; rr(X(-0.030), Y(0.02), X(0.060), Y(0.30), X(0.010)); ctx.fill();
+  ctx.strokeStyle=accent; ctx.lineWidth=Math.max(1,L*0.005);
+  ctx.beginPath(); ctx.moveTo(0,Y(0.02)); ctx.lineTo(0,Y(0.34)); ctx.stroke();
+
+  /* 서스펜션 암 */
+  ctx.strokeStyle="#0d131d"; ctx.lineWidth=Math.max(2,L*0.012); ctx.lineCap="round";
+  [[-0.28,-0.055],[0.26,0.055]].forEach(([ax,dy])=>{
+    [-1,1].forEach(d=>{
+      ctx.beginPath(); ctx.moveTo(d*X(0.045), Y(ax+dy)); ctx.lineTo(d*X(0.145), Y(ax-0.03)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(d*X(0.045), Y(ax+dy)); ctx.lineTo(d*X(0.145), Y(ax+0.03)); ctx.stroke();
+    });
+  });
+  tyre(-0.28); tyre(0.26);
+
+  /* 리어 윙 */
+  ctx.fillStyle="#0b1220"; rr(X(-0.105), Y(0.40), X(0.21), Y(0.062), X(0.006)); ctx.fill();
+  ctx.fillStyle=accent;    rr(X(-0.105), Y(0.412), X(0.21), Y(0.016), 0); ctx.fill();
+  ctx.fillStyle=body;
+  [-1,1].forEach(d=>{ rr(d>0? X(0.088):X(-0.105), Y(0.393), X(0.017), Y(0.078), X(0.004)); ctx.fill(); });
+  if(L>260){
+    ctx.fillStyle="rgba(255,255,255,.85)"; ctx.textAlign="center";
+    ctx.font="800 "+(L*0.030)+"px "+FONT();
+    ctx.fillText("IMPACT", 0, Y(0.30));
+  }
+  ctx.restore();
+}
+
+/* ---------- 위에서 내려다본 피트 크루 ---------- */
+function paintCrewTop(x,y,ang,scale,col,work,gun){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.scale(scale,scale);
+  const bob = work? Math.sin(tAnim*14+x*0.05)*1.6 : 0;
+  /* 그림자 */
+  ctx.fillStyle="rgba(0,0,0,.35)";
+  ctx.beginPath(); ctx.ellipse(2,3,17,13,0,0,6.2832); ctx.fill();
+  /* 팔 */
+  ctx.strokeStyle=col; ctx.lineWidth=6; ctx.lineCap="round";
+  const reach = work? 20+bob : 11;
+  ctx.beginPath(); ctx.moveTo(-7,-3); ctx.lineTo(-5,-reach); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( 7,-3); ctx.lineTo( 5,-reach); ctx.stroke();
+  /* 휠건 */
+  if(gun){
+    ctx.fillStyle="#f0c419"; rr(-6,-reach-9,12,11,3); ctx.fill();
+    ctx.fillStyle="#2a2f3a"; rr(-3,-reach-15,6,7,2); ctx.fill();
+    if(work){ ctx.strokeStyle="rgba(255,235,150,.9)"; ctx.lineWidth=2;
+      for(let k=0;k<3;k++){ const a=tAnim*22+k*2.1;
+        ctx.beginPath(); ctx.arc(0,-reach-10, 8, a, a+0.7); ctx.stroke(); } }
+  }
+  /* 몸통 */
+  const g=ctx.createLinearGradient(0,-12,0,14);
+  g.addColorStop(0,col); g.addColorStop(1,"rgba(0,0,0,.55)");
+  ctx.fillStyle=g; rr(-11,-10,22,26,9); ctx.fill();
+  /* 헬멧 */
+  ctx.fillStyle="#e8edf5"; ctx.beginPath(); ctx.arc(0,-2,9.5,0,6.2832); ctx.fill();
+  ctx.fillStyle=col; ctx.beginPath(); ctx.arc(0,-2,9.5,Math.PI*0.15,Math.PI*0.85); ctx.fill();
+  ctx.fillStyle="#141a26"; rr(-6,-8,12,4,2); ctx.fill();
+  ctx.restore();
+}
+
+/* =========================================================================
+   5. 피트 스탑 화면 (탑뷰 · 3인칭)  mode "out"=피트 아웃 / "stop"=타이어 교체
+   ========================================================================= */
 function drawPit(dt, mode, prog, carRun){
   tAnim+=dt;
-  const tall = H > W*1.05;
-  const horizon = tall? H*0.34 : H*0.42;
-  const wallY   = tall? H*0.62 : H*0.70;
-  const floorY  = tall? H*0.80 : H*0.80;
-  const cx=W*0.5;
-  /* 밤하늘 */
-  const g=ctx.createLinearGradient(0,0,0,horizon);
-  g.addColorStop(0,"#050613"); g.addColorStop(1,"#2c1b4e");
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,horizon);
-  for(let i=0;i<80;i++){ const x=(i*137.7)%W, y=(i*61.3)%horizon;
-    ctx.fillStyle="rgba(255,255,255,"+(0.12+((i*7)%10)/45)+")"; ctx.fillRect(x,y,1.4,1.4); }
-  /* 원경 스카이라인 */
-  for(let i=0;i<18;i++){
-    const bw=W/18, x=i*bw, bh=(24+((i*53)%11)*15);
-    ctx.fillStyle="#0b1028"; ctx.fillRect(x+3, horizon-bh, bw-6, bh);
-    for(let r=0;r<Math.floor(bh/13);r++) for(let c=0;c<3;c++){
-      if(((i*7+r*3+c)%4)===0) continue;
-      ctx.fillStyle="hsla("+((i*47)%360)+",80%,70%,"+(0.16+((i+r+c)%3)*0.10)+")";
-      ctx.fillRect(x+8+c*(bw-20)/3, horizon-bh+7+r*13, (bw-26)/3, 5); }
-  }
-  /* 피트 빌딩 */
-  ctx.fillStyle="#080d1a"; ctx.fillRect(0,horizon,W,wallY-horizon);
-  ctx.fillStyle="rgba(37,231,255,.07)"; ctx.fillRect(0,horizon,W,10);
-  for(let i=0;i<5;i++){
-    const bw=W*0.192, x=i*bw+W*0.006, mine=(i===2);
-    ctx.fillStyle="#0f1626"; rr(x, horizon+16, bw-12, wallY-horizon-16, 8); ctx.fill();
-    const ig=ctx.createLinearGradient(0,horizon+30,0,wallY);
-    ig.addColorStop(0, mine? "rgba(37,231,255,.20)":"rgba(120,160,220,.09)");
-    ig.addColorStop(1,"rgba(6,10,20,.9)");
-    ctx.fillStyle=ig; rr(x+9, horizon+34, bw-30, wallY-horizon-46, 5); ctx.fill();
-    ctx.fillStyle= mine? "#25e7ff":"rgba(190,225,255,.45)";
-    ctx.font="700 "+(bw<150?10:12)+"px "+FONT(); ctx.textAlign="left";
-    if(mine) ctx.fillText(bw<110? "IMPACT" : (bw<150? "IMPACT RACING":"IMPACT RACING · 사회적기업"), x+10, horizon+30);
-    else if(bw>=110) ctx.fillText("GARAGE "+(i+1), x+10, horizon+30);
-    /* 개러지 안 실루엣 */
-    if(!mine){ ctx.fillStyle="rgba(10,16,30,.85)";
-      rr(x+bw*0.22, wallY-46, bw*0.5, 42, 5); ctx.fill(); }
-  }
-  /* 피트월 조명 */
-  ctx.save(); ctx.globalCompositeOperation="lighter";
-  glow(cx, wallY-10, W*0.30, "rgba(37,231,255,.10)","rgba(37,231,255,0)"); ctx.restore();
-  /* 피트레인 노면 */
-  const fg=ctx.createLinearGradient(0,wallY,0,H);
-  fg.addColorStop(0,"#1c2233"); fg.addColorStop(1,"#0b0f19");
-  ctx.fillStyle=fg; ctx.fillRect(0,wallY,W,H-wallY);
-  /* 원근 라인 */
-  ctx.strokeStyle="rgba(255,255,255,.06)"; ctx.lineWidth=1;
-  for(let i=-6;i<=6;i++){ ctx.beginPath(); ctx.moveTo(cx+i*W*0.06, wallY); ctx.lineTo(cx+i*W*0.34, H); ctx.stroke(); }
-  /* 피트박스 & 속도제한 라인 */
-  ctx.strokeStyle="rgba(255,200,61,.85)"; ctx.lineWidth=5;
-  ctx.beginPath(); ctx.moveTo(cx-W*0.19, floorY+22); ctx.lineTo(cx+W*0.19, floorY+22); ctx.stroke();
-  ctx.strokeStyle="rgba(255,255,255,.35)"; ctx.lineWidth=3; ctx.setLineDash([24,18]);
-  ctx.beginPath(); ctx.moveTo(0,H-18); ctx.lineTo(W,H-18); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,255,255,.35)"; ctx.textAlign="center"; ctx.font="700 12px "+FONT();
-  ctx.fillText("PIT LANE 80 km/h", cx-W*0.32, H-26);
+  const cx=W*0.5, L=Math.min(H*0.64, W*(H>W*1.05? 0.62 : 0.46));
+  const drive = mode==="out" ? Math.pow(clamp(prog,0,1),2.1) : 0;
+  const cy=H*0.53 - drive*H*1.4;
+  const working = mode==="stop" ? (prog>0.14 && prog<0.80) : false;
+  const cs=L/300;                                  /* 크루 스케일 */
 
-  const carW=Math.min(tall? W*0.44 : W*0.235, 300);
-  const drive = mode==="out" ? Math.pow(clamp(prog,0,1),2.2) : 0;
-  const cxx = cx + drive*W*0.95;
-  const scale = 1 - drive*0.30;
-  const shake = carRun? Math.sin(tAnim*42)*1.1 : 0;
-  const working = mode==="stop" ? (prog>0.12 && prog<0.82) : (prog<0.30);
-  const cw=carW/230, spread = working? 0 : 1;
+  /* ---------- 피트레인 바닥 ---------- */
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#2a2e36"); g.addColorStop(.5,"#22262e"); g.addColorStop(1,"#1a1d24");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  /* 콘크리트 이음선 */
+  ctx.strokeStyle="rgba(255,255,255,.05)"; ctx.lineWidth=2;
+  for(let i=0;i<=8;i++){ const x=i/8*W; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let i=0;i<=5;i++){ const y=i/5*H; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  /* 얼룩 */
+  ctx.fillStyle="rgba(0,0,0,.12)";
+  for(let i=0;i<26;i++){ const x=(i*167)%W, y=(i*233)%H;
+    ctx.beginPath(); ctx.ellipse(x,y,26+(i%5)*10,14+(i%3)*7,i,0,6.2832); ctx.fill(); }
 
-  /* 크루 (차량 양옆) */
+  /* 개러지 입구 (아래쪽) */
+  ctx.fillStyle="#0c0f16"; ctx.fillRect(0, H*0.90, W, H*0.10);
+  ctx.fillStyle="rgba(37,231,255,.10)"; ctx.fillRect(0, H*0.90, W, 4);
+  ctx.fillStyle="rgba(190,225,255,.5)"; ctx.textAlign="left";
+  ctx.font="700 12px "+FONT();
+  ctx.fillText("GARAGE 3 · IMPACT RACING · 사회적기업 레이싱팀", 18, H*0.955);
+
+  /* 피트 박스 라인 */
+  ctx.strokeStyle="rgba(240,200,60,.95)"; ctx.lineWidth=Math.max(3,L*0.016);
   [-1,1].forEach(d=>{
-    paintCrew(cxx + d*carW*(0.52+spread*0.34), floorY+10, cw, d<0?"#1d4ed8":"#0f766e",
-              working? (Math.sin(tAnim*16+d)+1)/2 : 0.15);
-    paintCrew(cxx + d*carW*(0.80+spread*0.44), floorY+24, cw*1.05, d<0?"#0f766e":"#1d4ed8",
-              working? (Math.cos(tAnim*15+d)+1)/2 : 0.1);
+    ctx.beginPath();
+    ctx.moveTo(cx+d*L*0.50, H*0.10); ctx.lineTo(cx+d*L*0.50, H*0.88); ctx.stroke();
   });
-  /* 롤리팝 (정지 시에만) */
-  if(mode==="stop"){
-    const go = prog>0.86, lolY = go? -70:0;
-    ctx.strokeStyle="#b9c6da"; ctx.lineWidth=4;
-    ctx.beginPath(); ctx.moveTo(cxx+carW*0.60, floorY-16+lolY); ctx.lineTo(cxx+carW*0.60, floorY-130+lolY); ctx.stroke();
-    ctx.fillStyle= go? "#3ce08f":"#ff2d46";
-    ctx.beginPath(); ctx.arc(cxx+carW*0.60, floorY-148+lolY, 21,0,6.2832); ctx.fill();
-    ctx.fillStyle="#04121a"; ctx.textAlign="center"; ctx.font="800 13px "+FONT();
-    ctx.fillText(go?"GO":"BRAKE", cxx+carW*0.60, floorY-143+lolY);
-  }
-  /* 교체용 타이어 */
-  if(mode==="stop"){
-    [-1,1].forEach(d=>{ const sx=cxx+d*carW*1.25;
-      for(let i=0;i<2;i++){ ctx.fillStyle= i%2? "#1d2230":"#161b26";
-        rr(sx-26, floorY+14-i*14, 52, 13, 5); ctx.fill();
-        ctx.strokeStyle="rgba(60,224,143,.5)"; ctx.lineWidth=1.2;
-        rr(sx-26, floorY+14-i*14, 52, 13, 5); ctx.stroke(); } });
-  }
-  /* 차량 */
-  const jack = working? -8 : 0;
-  paintF1(cxx+shake, floorY+jack, carW*scale,
-          Object.assign(carLivery(), {light: carRun?0.95:0.35}));
-  /* 리어 잭 */
+  ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=Math.max(2,L*0.010);
+  ctx.setLineDash([18,14]);
+  ctx.beginPath(); ctx.moveTo(cx-L*0.86, H*0.06); ctx.lineTo(cx-L*0.86, H*0.94); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+L*0.86, H*0.06); ctx.lineTo(cx+L*0.86, H*0.94); ctx.stroke();
+  ctx.setLineDash([]);
+  /* 정지 마크 */
+  ctx.strokeStyle="rgba(240,200,60,.9)"; ctx.lineWidth=Math.max(3,L*0.014);
+  ctx.beginPath(); ctx.moveTo(cx-L*0.30, H*0.53+L*0.30); ctx.lineTo(cx+L*0.30, H*0.53+L*0.30); ctx.stroke();
+
+  /* 조명 풀 */
+  ctx.save(); ctx.globalCompositeOperation="lighter";
+  glow(cx, H*0.30, L*0.85, "rgba(255,245,220,.06)","rgba(255,245,220,0)");
+  glow(cx, H*0.72, L*0.85, "rgba(255,245,220,.05)","rgba(255,245,220,0)");
+  ctx.restore();
+  /* 상단 게이트(피트레인 방향) */
+  ctx.fillStyle="rgba(255,255,255,.06)"; ctx.fillRect(0,0,W,H*0.05);
+  ctx.fillStyle="rgba(190,225,255,.45)"; ctx.textAlign="right"; ctx.font="700 12px "+FONT();
+  ctx.fillText("PIT LANE EXIT ▲", W-18, H*0.035);
+
+  /* ---------- 크루 ---------- */
+  const CREW=[
+    /* [x, y, angle(차량 방향), gun?] : 앞/뒤 좌우 휠 3명씩 + 잭 2명 + 스태빌라이저 2명 */
+    [-0.30,-0.28, Math.PI/2, 1],[-0.44,-0.36, Math.PI/2, 0],[-0.44,-0.19, Math.PI/2, 0],
+    [ 0.30,-0.28,-Math.PI/2, 1],[ 0.44,-0.36,-Math.PI/2, 0],[ 0.44,-0.19,-Math.PI/2, 0],
+    [-0.30, 0.26, Math.PI/2, 1],[-0.44, 0.34, Math.PI/2, 0],[-0.44, 0.17, Math.PI/2, 0],
+    [ 0.30, 0.26,-Math.PI/2, 1],[ 0.44, 0.34,-Math.PI/2, 0],[ 0.44, 0.17,-Math.PI/2, 0],
+    [ 0.00,-0.62, Math.PI,   0],[ 0.00, 0.60, 0,         0],
+    [-0.34, 0.00, Math.PI/2, 0],[ 0.34, 0.00,-Math.PI/2, 0]
+  ];
+  const spread = working? 1 : 1.34;
+  CREW.forEach((c,i)=>{
+    const col = (i%3===0)? "#e8283c" : (i%3===1? "#c81f30" : "#f04a5a");
+    paintCrewTop(cx + c[0]*L*spread, cy + c[1]*L, c[2], cs,
+                 col, working, c[3]&&working);
+  });
+  /* 교체용 타이어 (좌우) */
+  [-1,1].forEach(d=>{
+    [-0.30,0.26].forEach(ay=>{
+      ctx.save(); ctx.translate(cx+d*L*0.62, cy+ay*L+L*0.10);
+      ctx.fillStyle="rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(2,3,L*0.055,L*0.055,0,0,6.2832); ctx.fill();
+      ctx.fillStyle="#15181f"; ctx.beginPath(); ctx.arc(0,0,L*0.055,0,6.2832); ctx.fill();
+      ctx.fillStyle="#242a33"; ctx.beginPath(); ctx.arc(0,0,L*0.046,0,6.2832); ctx.fill();
+      ctx.strokeStyle="#3ce08f"; ctx.lineWidth=Math.max(1.5,L*0.005);
+      ctx.beginPath(); ctx.arc(0,0,L*0.036,0,6.2832); ctx.stroke();
+      ctx.fillStyle="#3a424e"; ctx.beginPath(); ctx.arc(0,0,L*0.020,0,6.2832); ctx.fill();
+      ctx.fillStyle="#11141a"; ctx.beginPath(); ctx.arc(0,0,L*0.009,0,6.2832); ctx.fill();
+      ctx.restore();
+    });
+  });
+
+  /* ---------- 머신 ---------- */
+  paintF1Top(cx, cy, L, carLivery());
+
+  /* 잭 (앞/뒤) */
   if(working){
-    ctx.fillStyle="#7f90a8";
-    ctx.beginPath(); ctx.moveTo(cxx-carW*0.06, floorY+14); ctx.lineTo(cxx+carW*0.06, floorY+14);
-    ctx.lineTo(cxx, floorY-carW*0.02); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle="#7f90a8"; ctx.lineWidth=4;
-    ctx.beginPath(); ctx.moveTo(cxx, floorY+12); ctx.lineTo(cxx+carW*0.30, floorY+26); ctx.stroke();
+    ctx.strokeStyle="#9aa8bd"; ctx.lineWidth=Math.max(3,L*0.014);
+    ctx.beginPath(); ctx.moveTo(cx, cy-L*0.50); ctx.lineTo(cx, cy-L*0.60); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy+L*0.47); ctx.lineTo(cx, cy+L*0.57); ctx.stroke();
   }
-  /* 휠건 스파크 */
-  if(working) for(let i=0;i<10;i++){
-    const d=(i%2)?1:-1, px=cxx+d*carW*0.40+rnd(-7,7), py=floorY-rnd(0,16);
-    ctx.fillStyle="rgba(255,225,130,"+rnd(.3,.9)+")"; ctx.fillRect(px,py,2,2); }
-  /* 배기 화염 */
-  if(mode==="out" && prog>0.22 && prog<0.8){
-    ctx.save(); ctx.globalCompositeOperation="lighter";
-    glow(cxx, floorY-carW*0.20, carW*0.28, "rgba(255,150,40,.45)","rgba(255,150,40,0)"); ctx.restore();
-  }
-  /* 스톱 타이머 */
+
+  /* ---------- 피트 신호등 ---------- */
+  const go = (mode==="stop" && prog>0.86) || mode==="out";
+  const lx=cx-L*0.86-30, ly=H*0.30;
+  ctx.fillStyle="#0b0f16"; rr(lx-16, ly-38, 32, 76, 8); ctx.fill();
+  ctx.fillStyle= go? "rgba(60,224,143,.25)":"#e8283c";
+  ctx.beginPath(); ctx.arc(lx, ly-19, 11, 0, 6.2832); ctx.fill();
+  ctx.fillStyle= go? "#3ce08f":"rgba(60,224,143,.18)";
+  ctx.beginPath(); ctx.arc(lx, ly+19, 11, 0, 6.2832); ctx.fill();
+  if(go){ ctx.save(); ctx.globalCompositeOperation="lighter";
+    glow(lx, ly+19, 34, "rgba(60,224,143,.5)","rgba(60,224,143,0)"); ctx.restore(); }
+
+  /* ---------- 스톱 타이머 ---------- */
+  ctx.textAlign="center";
   if(mode==="stop"){
     const el=(prog*SPEC.pitTime).toFixed(1);
-    ctx.textAlign="center";
-    ctx.fillStyle="rgba(4,8,18,.78)"; rr(cx-72, H*0.155, 144, 54, 12); ctx.fill();
-    ctx.strokeStyle="rgba(37,231,255,.45)"; ctx.lineWidth=1; rr(cx-72, H*0.155, 144, 54, 12); ctx.stroke();
-    ctx.fillStyle="rgba(140,180,225,.75)"; ctx.font="700 10px "+FONT();
-    ctx.fillText("PIT STOP TIME", cx, H*0.155+16);
-    ctx.fillStyle="#25e7ff"; ctx.font="800 28px "+FONT();
-    ctx.fillText(el+"s", cx, H*0.155+44);
+    const tx2=(W<720? W*0.5 : W*0.855), ty2=(W<720? H*0.80 : H*0.70);
+    ctx.fillStyle="rgba(4,8,18,.85)"; rr(tx2-82, ty2, 164, 60, 12); ctx.fill();
+    ctx.strokeStyle="rgba(37,231,255,.5)"; ctx.lineWidth=1; rr(tx2-82, ty2, 164, 60, 12); ctx.stroke();
+    ctx.fillStyle="rgba(150,190,235,.8)"; ctx.font="700 10.5px "+FONT();
+    ctx.fillText("PIT STOP TIME", tx2, ty2+18);
+    ctx.fillStyle= prog>0.86? "#3ce08f":"#25e7ff"; ctx.font="800 30px "+FONT();
+    ctx.fillText(el+"s", tx2, ty2+48);
+  }
+  /* 배기 열 (피트 아웃) */
+  if(mode==="out" && prog>0.15 && prog<0.9){
+    ctx.save(); ctx.globalCompositeOperation="lighter";
+    glow(cx, cy+L*0.52, L*0.22, "rgba(255,150,50,.45)","rgba(255,150,50,0)"); ctx.restore();
   }
 }
 
@@ -958,9 +1264,9 @@ function renderRoad(){
     if(d){ [-0.34,0.34].forEach(lx=>{
       poly(p1.x+p1.w*lx-lw1,p1.y,p1.x+p1.w*lx+lw1,p1.y,p2.x+p2.w*lx+lw2,p2.y,p2.x+p2.w*lx-lw2,p2.y,
            shade(COL.line, f*0.30)); }); }
-    /* 좌우 콘크리트 방호벽 */
+    /* 좌우 콘크리트 방호벽 (카메라에 너무 가까운 세그먼트는 생략 : 투영 폭주 방지) */
     const wh1=s.p1.screen.scale*WALLH*H/2, wh2=s.p2.screen.scale*WALLH*H/2;
-    [-1,1].forEach(sd=>{
+    if(s.p1.camera.z>SEGLEN*2.5) [-1,1].forEach(sd=>{
       const a=p1.x+sd*p1.w*1.18, b=p2.x+sd*p2.w*1.18;
       poly(a,p1.y, a,p1.y-wh1, b,p2.y-wh2, b,p2.y, shade(COL.wall[d],f*0.92));
       poly(a,p1.y-wh1, a,p1.y-wh1-wh1*0.14, b,p2.y-wh2-wh2*0.14, b,p2.y-wh2, shade(COL.line,f*0.55));
@@ -1121,104 +1427,269 @@ function wrapText(t,x,y,maxw,lh){
   lines.forEach((l,i)=>ctx.fillText(l,x,yy+i*lh));
 }
 
-/* ------------------------------ 콕핏(1인칭) 오버레이 ------------------------------ */
+/* ------------------------------ 콕핏(1인칭) 오버레이 ------------------------------
+   실제 F1 온보드 화면 구성 : 상단 바디워크 + 헤일로 · 좌우 섀시/미러 ·
+   중앙 스티어링 휠(LED 레브 · LCD · 버튼/로터리) · 파란 장갑을 낀 두 손      */
 function drawCockpit(){
   const spd=P.speed/SPEC.maxSpeed;
+
   /* 속도감 스트릭 */
   if(spd>0.45){
     ctx.save(); ctx.globalCompositeOperation="lighter";
-    const n=Math.floor(spd*18);
+    const n=Math.floor(spd*16);
     for(let i=0;i<n;i++){
-      const sd=(i%2)?1:-1, yy=H*0.35+Math.random()*H*0.4;
-      const xx=W/2+sd*(W*0.22+Math.random()*W*0.3);
-      ctx.strokeStyle="rgba(150,200,255,"+(0.05+Math.random()*0.10*spd)+")";
-      ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(xx,yy); ctx.lineTo(xx+sd*W*0.10*spd, yy+ (yy-H*0.5)*0.15); ctx.stroke();
+      const sd=(i%2)?1:-1, yy=H*0.34+Math.random()*H*0.32;
+      const xx=W/2+sd*(W*0.24+Math.random()*W*0.28);
+      ctx.strokeStyle="rgba(160,205,255,"+(0.04+Math.random()*0.09*spd)+")";
+      ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(xx,yy);
+      ctx.lineTo(xx+sd*W*0.10*spd, yy+(yy-H*0.5)*0.14); ctx.stroke();
     }
     ctx.restore();
   }
-  /* 비네트 (헬멧 시야) */
-  const vg=ctx.createRadialGradient(W/2,H*0.46,H*0.30, W/2,H*0.46,H*0.86);
-  vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.72)");
+  /* 헬멧 시야 비네트 */
+  const vg=ctx.createRadialGradient(W/2,H*0.46,H*0.32, W/2,H*0.46,H*0.92);
+  vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.68)");
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 
-  /* 사이드 미러 */
-  [[-1,W*0.088],[1,W*0.912]].forEach(([sd,mx])=>{
-    const my=H*0.545, mw=W*0.088, mh=H*0.072;
-    ctx.save(); ctx.translate(mx,my); ctx.rotate(sd*0.05); ctx.translate(-mx,-my);
-    /* 미러 암 */
-    ctx.strokeStyle="#0a0e18"; ctx.lineWidth=W*0.011;
-    ctx.beginPath(); ctx.moveTo(mx+sd*mw*0.35, my+mh*0.75);
-    ctx.lineTo(mx+sd*mw*0.9, my+mh*1.9); ctx.stroke();
-    ctx.fillStyle="#070a12"; rr(mx-mw/2,my-mh/2,mw,mh,7); ctx.fill();
-    ctx.save(); ctx.beginPath(); rr(mx-mw/2+3,my-mh/2+3,mw-6,mh-6,5); ctx.clip();
-    const mg=ctx.createLinearGradient(0,my-mh/2,0,my+mh/2);
-    mg.addColorStop(0,"#241a45"); mg.addColorStop(.5,"#101a30"); mg.addColorStop(1,"#1b2334");
-    ctx.fillStyle=mg; ctx.fillRect(mx-mw/2,my-mh/2,mw,mh);
-    ctx.fillStyle="rgba(255,220,150,.35)";
-    for(let i=0;i<5;i++) ctx.fillRect(mx-mw/2+6+i*mw*0.18, my-mh*0.30, 3, 6);
-    if(P.mirrorCar>0)
-      paintF1(mx-sd*mw*0.06, my+mh*0.42, mw*0.62*P.mirrorCar,
-              {body:"#d33a52", body2:"#3a0d1c", accent:"#e8eef8", light:0.95});
-    ctx.restore();
-    ctx.strokeStyle="rgba(150,190,240,.22)"; ctx.lineWidth=2; rr(mx-mw/2,my-mh/2,mw,mh,7); ctx.stroke();
+  /* ---------- 상단 바디워크 + 헤일로 ---------- */
+  ctx.save();
+  ctx.fillStyle="#080c16";
+  ctx.beginPath();
+  ctx.moveTo(-2,-2); ctx.lineTo(W+2,-2); ctx.lineTo(W+2,H*0.150);
+  ctx.bezierCurveTo(W*0.78,H*0.205, W*0.62,H*0.268, W*0.5,H*0.272);
+  ctx.bezierCurveTo(W*0.38,H*0.268, W*0.22,H*0.205, -2,H*0.150);
+  ctx.closePath(); ctx.fill();
+  /* 팀 스트라이프 */
+  ctx.save(); ctx.clip();
+  const st=ctx.createLinearGradient(0,0,0,H*0.27);
+  st.addColorStop(0,"rgba(37,231,255,.10)"); st.addColorStop(.45,"rgba(255,45,90,.16)");
+  st.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=st; ctx.fillRect(0,0,W,H*0.27);
+  ctx.fillStyle="rgba(190,225,255,.035)"; ctx.textAlign="center";
+  ctx.font="800 "+Math.round(H*0.055)+"px "+FONT();
+  ctx.fillText("IMPACT RACING", W*0.5, H*0.085);
+  ctx.restore();
+  /* 아래쪽 광택 라인 */
+  ctx.strokeStyle="rgba(150,190,240,.16)"; ctx.lineWidth=Math.max(1,H*0.003);
+  ctx.beginPath();
+  ctx.moveTo(-2,H*0.146);
+  ctx.bezierCurveTo(W*0.22,H*0.201, W*0.38,H*0.264, W*0.5,H*0.268);
+  ctx.bezierCurveTo(W*0.62,H*0.264, W*0.78,H*0.201, W+2,H*0.146);
+  ctx.stroke();
+  ctx.restore();
+
+  /* 헤일로 센터 스트럿 */
+  ctx.fillStyle="#080c16";
+  ctx.beginPath();
+  ctx.moveTo(W*0.5-W*0.010, H*0.255);
+  ctx.lineTo(W*0.5+W*0.010, H*0.255);
+  ctx.lineTo(W*0.5+W*0.020, H*0.500);
+  ctx.quadraticCurveTo(W*0.5+W*0.055, H*0.548, W*0.5+W*0.048, H*0.575);
+  ctx.lineTo(W*0.5-W*0.048, H*0.575);
+  ctx.quadraticCurveTo(W*0.5-W*0.055, H*0.548, W*0.5-W*0.020, H*0.500);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle="rgba(160,200,250,.10)";
+  ctx.fillRect(W*0.5-W*0.003, H*0.26, W*0.004, H*0.30);
+
+  /* ---------- 좌우 섀시(콕핏 사이드) ---------- */
+  [-1,1].forEach(sd=>{
+    const ex = sd<0? 0 : W;
+    ctx.save();
+    ctx.fillStyle="#0c1428";
+    ctx.beginPath();
+    ctx.moveTo(ex, H*1.02);
+    ctx.lineTo(ex, H*0.515);
+    ctx.quadraticCurveTo(ex+sd*W*0.10, H*0.60, ex+sd*W*0.205, H*0.735);
+    ctx.quadraticCurveTo(ex+sd*W*0.275, H*0.835, ex+sd*W*0.30, H*1.02);
+    ctx.closePath(); ctx.fill();
+    /* 흰색 리버리 엣지 */
+    ctx.strokeStyle="rgba(235,244,255,.85)"; ctx.lineWidth=Math.max(2,H*0.007);
+    ctx.beginPath();
+    ctx.moveTo(ex, H*0.515);
+    ctx.quadraticCurveTo(ex+sd*W*0.10, H*0.60, ex+sd*W*0.205, H*0.735);
+    ctx.quadraticCurveTo(ex+sd*W*0.275, H*0.835, ex+sd*W*0.30, H*1.02);
+    ctx.stroke();
+    ctx.strokeStyle="rgba(37,231,255,.35)"; ctx.lineWidth=Math.max(1,H*0.003);
+    ctx.beginPath();
+    ctx.moveTo(ex, H*0.556);
+    ctx.quadraticCurveTo(ex+sd*W*0.095, H*0.638, ex+sd*W*0.185, H*0.762);
+    ctx.stroke();
     ctx.restore();
   });
 
-  /* 헤일로 (티타늄 아치 + 센터 스트럿) */
-  ctx.save();
-  ctx.lineCap="round"; ctx.strokeStyle="#05070d"; ctx.lineWidth=H*0.048;
-  ctx.beginPath();
-  ctx.moveTo(-W*0.03, H*1.00);
-  ctx.quadraticCurveTo(W*0.03, H*0.34, W*0.5, H*0.155);
-  ctx.quadraticCurveTo(W*0.97, H*0.34, W*1.03, H*1.00);
-  ctx.stroke();
-  ctx.strokeStyle="rgba(150,190,240,.14)"; ctx.lineWidth=Math.max(1,H*0.004);
-  ctx.beginPath();
-  ctx.moveTo(-W*0.03, H*0.98);
-  ctx.quadraticCurveTo(W*0.03, H*0.32, W*0.5, H*0.137);
-  ctx.quadraticCurveTo(W*0.97, H*0.32, W*1.03, H*0.98);
-  ctx.stroke();
-  ctx.fillStyle="#05070d";
-  ctx.beginPath(); ctx.moveTo(W*0.5-W*0.008, H*0.17);
-  ctx.lineTo(W*0.5+W*0.008, H*0.17); ctx.lineTo(W*0.5+W*0.013, H*0.335);
-  ctx.lineTo(W*0.5-W*0.013, H*0.335); ctx.closePath(); ctx.fill();
-  ctx.fillStyle="rgba(150,190,240,.10)";
-  ctx.fillRect(W*0.5-W*0.002, H*0.17, W*0.003, H*0.16);
-  ctx.restore();
+  /* ---------- 사이드 미러 ---------- */
+  [[-1,W*0.178],[1,W*0.822]].forEach(([sd,mx])=>{
+    const my=H*0.598, mw=W*0.082, mh=H*0.072;
+    ctx.save(); ctx.translate(mx,my); ctx.rotate(sd*0.06);
+    ctx.fillStyle="#070b14"; rr(-mw/2,-mh/2,mw,mh,8); ctx.fill();
+    ctx.save(); ctx.beginPath(); rr(-mw/2+4,-mh/2+4,mw-8,mh-8,6); ctx.clip();
+    const mg=ctx.createLinearGradient(0,-mh/2,0,mh/2);
+    mg.addColorStop(0,"#2a1c52"); mg.addColorStop(.46,"#16203a"); mg.addColorStop(1,"#1d2739");
+    ctx.fillStyle=mg; ctx.fillRect(-mw/2,-mh/2,mw,mh);
+    ctx.fillStyle="rgba(255,220,150,.32)";
+    for(let i=0;i<6;i++) ctx.fillRect(-mw/2+7+i*mw*0.16, -mh*0.22, 3, 7);
+    if(P.mirrorCar>0)
+      paintF1(-sd*mw*0.05, mh*0.44, mw*0.60*P.mirrorCar,
+              {body:"#d33a52", body2:"#3a0d1c", accent:"#e8eef8", light:0.95});
+    ctx.restore();
+    ctx.strokeStyle="rgba(150,190,240,.28)"; ctx.lineWidth=2; rr(-mw/2,-mh/2,mw,mh,8); ctx.stroke();
+    ctx.restore();
+  });
 
-  /* 스티어링 휠 */
-  const wy=H*0.995, ww=Math.min(Math.max(W*0.29, W*0.60), H*0.42, 380), ang=P.steerV*0.55;
-  ctx.save(); ctx.translate(W/2, wy); ctx.rotate(ang);
-  ctx.fillStyle="#0c1018"; rr(-ww/2,-ww*0.34,ww,ww*0.62,ww*0.10); ctx.fill();
-  ctx.strokeStyle="#1b2333"; ctx.lineWidth=ww*0.02; rr(-ww/2,-ww*0.34,ww,ww*0.62,ww*0.10); ctx.stroke();
-  /* 그립 */
-  [-1,1].forEach(d=>{ ctx.fillStyle="#151b28";
-    rr(d*ww*0.30-ww*0.10, -ww*0.30, ww*0.20, ww*0.40, ww*0.05); ctx.fill(); });
-  /* 디스플레이 */
-  ctx.fillStyle="#02060e"; rr(-ww*0.19,-ww*0.27,ww*0.38,ww*0.19,ww*0.02); ctx.fill();
-  ctx.textAlign="center";
-  ctx.fillStyle="#25e7ff"; ctx.font="800 "+(ww*0.11)+"px "+FONT();
-  ctx.fillText(P.gear, 0, -ww*0.135);
-  ctx.fillStyle="#8ea3c6"; ctx.font="700 "+(ww*0.035)+"px "+FONT();
-  ctx.fillText("GEAR", 0, -ww*0.235);
-  ctx.fillStyle="#3ce08f"; ctx.font="700 "+(ww*0.04)+"px "+FONT();
-  ctx.fillText("LAP "+P.lap+"/"+LAPS, 0, -ww*0.10);
-  /* 시프트 라이트 */
-  const rpm=P.rpm;
-  for(let i=0;i<9;i++){
-    const on = rpm > (i+1)/10;
-    ctx.fillStyle = on ? (i<4?"#3ce08f":(i<7?"#ffc83d":"#ff2d46")) : "rgba(255,255,255,.10)";
-    rr(-ww*0.20+i*ww*0.045, -ww*0.325, ww*0.032, ww*0.028, 2); ctx.fill();
+  drawWheel();
+}
+
+/* ------------------------------ 스티어링 휠 ------------------------------ */
+function drawWheel(){
+  const tall = H > W*1.05;
+  const ww=tall? Math.min(W*0.86, H*0.40) : Math.min(W*0.40, H*0.60);
+  const hh=ww*0.70;
+  const topY=tall? H*0.655 : H*0.625, cy=topY+hh*0.5;
+  const u=ww/100;                          /* 1 유닛 */
+  const F=(sz,w)=> (w||700)+" "+(sz*u)+"px "+FONT();
+  ctx.save(); ctx.translate(W/2, cy); ctx.rotate(P.steerV*0.40);
+  ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+
+  /* 그립 (좌우) */
+  [-1,1].forEach(d=>{
+    ctx.fillStyle="#0d1119";
+    rr(d>0? 34*u : -50*u, -36*u, 16*u, 72*u, 7*u); ctx.fill();
+    ctx.fillStyle="#181e28";
+    rr(d>0? 36*u : -48*u, -33*u, 12*u, 66*u, 6*u); ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,.05)";
+    for(let i=0;i<7;i++) rr((d>0?37:-47)*u, (-30+i*9)*u, 10*u, 4*u, 2*u), ctx.fill();
+  });
+  /* 페이스 */
+  const fg=ctx.createLinearGradient(0,-36*u,0,34*u);
+  fg.addColorStop(0,"#0e1219"); fg.addColorStop(1,"#06080d");
+  ctx.fillStyle=fg; rr(-37*u,-36*u,74*u,70*u,8*u); ctx.fill();
+  ctx.strokeStyle="rgba(140,175,225,.14)"; ctx.lineWidth=Math.max(1,1.2*u);
+  rr(-37*u,-36*u,74*u,70*u,8*u); ctx.stroke();
+  /* 상단 카본 바 */
+  ctx.fillStyle="#080b12"; rr(-32*u,-35*u,64*u,10*u,3*u); ctx.fill();
+  /* 레브 LED */
+  const leds=15;
+  for(let i=0;i<leds;i++){
+    const on = P.rpm > (i+0.5)/leds;
+    const col = i<5? "#2fe08a" : (i<10? "#ffc83d" : "#ff3b52");
+    ctx.fillStyle = on? col : "rgba(255,255,255,.10)";
+    ctx.beginPath(); ctx.arc((-28+i*4)*u, -30*u, 1.5*u, 0, 6.2832); ctx.fill();
+    if(on){ ctx.save(); ctx.globalCompositeOperation="lighter";
+      glow((-28+i*4)*u, -30*u, 3.2*u, col, "rgba(0,0,0,0)"); ctx.restore(); }
   }
-  /* 버튼 */
-  [[-0.36,-0.06],[0.36,-0.06],[-0.36,0.06],[0.36,0.06]].forEach(([bx,by2])=>{
-    ctx.fillStyle="#25344a"; ctx.beginPath(); ctx.arc(bx*ww, by2*ww, ww*0.022,0,6.2832); ctx.fill(); });
-  ctx.restore();
+  /* LCD */
+  ctx.fillStyle="#04070e"; rr(-23*u,-22*u,46*u,36*u,2.5*u); ctx.fill();
+  ctx.strokeStyle="rgba(90,130,190,.35)"; ctx.lineWidth=Math.max(1,0.8*u);
+  rr(-23*u,-22*u,46*u,36*u,2.5*u); ctx.stroke();
+  const kmh=Math.round(P.speed/UPM*3.6);
+  ctx.textAlign="left";
+  ctx.fillStyle="#e8f2ff"; ctx.font=F(4.4,700); ctx.fillText(kmh, -21*u, -16.4*u);
+  ctx.fillStyle="#7f93b3"; ctx.font=F(2.6,600); ctx.fillText("KM/H", -21*u, -12.6*u);
+  ctx.textAlign="center";
+  ctx.fillStyle="#e8f2ff"; ctx.font=F(3.6,700); ctx.fillText(fmtTime(P.lapTime), 0, -16.6*u);
+  ctx.textAlign="right";
+  const dl=lapDelta();
+  ctx.fillStyle= dl<=0? "#3ce08f":"#ff6b6b"; ctx.font=F(3.4,700);
+  ctx.fillText((dl>=0?"+":"")+dl.toFixed(2), 21*u, -16.6*u);
+  /* 기어 */
+  ctx.textAlign="center"; ctx.fillStyle="#eaf6ff"; ctx.font=F(13,800);
+  ctx.fillText(P.gear, 0, 4.5*u);
+  /* 좌우 정보 */
+  ctx.textAlign="left"; ctx.fillStyle="#ffd166"; ctx.font=F(2.6,700);
+  ctx.fillText("L"+Math.min(P.lap,LAPS), -21*u, -7*u);
+  ctx.fillStyle="#7f93b3";
+  ctx.fillText(Math.round(70+P.tyre*40)+"°C", -21*u, -3.2*u);
+  ctx.fillText(Math.round(68+P.tyre*38)+"°C", -21*u, 0.6*u);
+  ctx.textAlign="right"; ctx.fillStyle="#3ce08f"; ctx.font=F(3,700);
+  ctx.fillText("P"+P.rank, 21*u, -7*u);
+  ctx.fillStyle="#7f93b3"; ctx.font=F(2.6,700);
+  ctx.fillText("🪙"+P.coins, 21*u, -2.6*u);
+  /* 타이어 게이지 */
+  const tw=38*u, tx=-19*u, ty=7.6*u;
+  ctx.fillStyle="rgba(255,255,255,.10)"; rr(tx,ty,tw,3.6*u,1.2*u); ctx.fill();
+  const tp=clamp(P.tyre,0,1);
+  ctx.fillStyle = tp>0.6? "#3ce08f" : (tp>0.45? "#ffc83d":"#ff5a5a");
+  rr(tx,ty,tw*tp,3.6*u,1.2*u); ctx.fill();
+  ctx.textAlign="left"; ctx.fillStyle="rgba(255,255,255,.92)"; ctx.font=F(2.3,800);
+  ctx.fillText("TYRE "+Math.round(tp*100)+"%", tx+1.4*u, ty+2.9*u);
+  /* 페널티 경고 */
+  if(P.penalty>0){
+    ctx.textAlign="center"; ctx.fillStyle="#ff5a5a"; ctx.font=F(3,800);
+    ctx.fillText("PENALTY "+P.penalty.toFixed(1)+"s", 0, 12.4*u);
+  }
 
-  /* 프론트윙 끝 (시야 하단) */
-  ctx.fillStyle="#0a0e18";
-  ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(0,H*0.93);
-  ctx.quadraticCurveTo(W*0.5,H*0.985,W,H*0.93); ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
+  /* 버튼 */
+  const btn=(x,y,r,c,txt)=>{
+    ctx.fillStyle="#05080f"; ctx.beginPath(); ctx.arc(x*u,y*u,(r+0.7)*u,0,6.2832); ctx.fill();
+    ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x*u,y*u,r*u,0,6.2832); ctx.fill();
+    if(txt){ ctx.fillStyle="rgba(0,0,0,.65)"; ctx.font=F(1.6,800); ctx.textAlign="center";
+      ctx.fillText(txt,x*u,(y+0.6)*u); } };
+  btn(-30,-17,2.6,"#2fe08a","N"); btn(-30,-9,2.4,"#e8283c","");
+  btn(-30,-1,2.2,"#d7dde8",""); btn(-30,7,2.2,"#25c8e7","BB");
+  btn( 30,-17,2.6,"#e8283c","PIT"); btn( 30,-9,2.4,"#ffc83d","");
+  btn( 30,-1,2.2,"#d7dde8",""); btn( 30,7,2.2,"#25c8e7","EX");
+  /* 로터리 다이얼 */
+  const dial=(x,y,r,col,txt)=>{
+    ctx.fillStyle="#0b0f16"; ctx.beginPath(); ctx.arc(x*u,y*u,r*u,0,6.2832); ctx.fill();
+    ctx.strokeStyle=col; ctx.lineWidth=1.4*u;
+    ctx.beginPath(); ctx.arc(x*u,y*u,(r-1)*u,-2.4,1.1); ctx.stroke();
+    ctx.fillStyle="#2a323f"; ctx.beginPath(); ctx.arc(x*u,y*u,(r-2.4)*u,0,6.2832); ctx.fill();
+    ctx.fillStyle="#93a6c2"; ctx.font=F(1.7,800); ctx.textAlign="center";
+    ctx.fillText(txt,x*u,(y+0.6)*u); };
+  dial(-21,21,5.4,"#ffc83d","FUEL"); dial(-7,23,5.8,"#25c8e7","TYRE");
+  dial(  7,23,5.8,"#ff3b52","STRAT"); dial(21,21,5.4,"#2fe08a","MFB");
+  ctx.fillStyle="#7f93b3"; ctx.font=F(2,700); ctx.textAlign="center";
+  ctx.fillText("IMPACT RACING · SOCIAL ENTERPRISE", 0, -25.4*u);
+
+  /* 장갑 낀 손 */
+  paintGlove(-42*u, 1*u, u*0.60, -1);
+  paintGlove( 42*u, 1*u, u*0.60,  1);
+  ctx.restore();
+}
+/* 파란 레이싱 장갑 (그립을 감싸 쥔 손) */
+function paintGlove(x,y,u,sd){
+  ctx.save(); ctx.translate(x,y); ctx.scale(sd,1);
+  const blue="#2447c8", blue2="#152a7d", dark="#0f1d55";
+  /* 소매 (프레임 밖으로) */
+  ctx.fillStyle=blue2;
+  ctx.beginPath();
+  ctx.moveTo(-13*u,22*u); ctx.lineTo(13*u,22*u);
+  ctx.lineTo(17*u,64*u); ctx.lineTo(-17*u,64*u); ctx.closePath(); ctx.fill();
+  /* 손목 밴드 */
+  ctx.fillStyle="#eef3fa";
+  ctx.beginPath(); ctx.moveTo(-14*u,19*u); ctx.lineTo(14*u,19*u);
+  ctx.lineTo(15*u,27*u); ctx.lineTo(-15*u,27*u); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#25e7ff"; ctx.fillRect(-15*u,27*u,30*u,2.4*u);
+  /* 손등 */
+  const g=ctx.createLinearGradient(-14*u,-26*u,14*u,22*u);
+  g.addColorStop(0,blue); g.addColorStop(1,blue2);
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  ctx.moveTo(-13*u,-18*u);
+  ctx.quadraticCurveTo(2*u,-27*u, 13*u,-14*u);
+  ctx.quadraticCurveTo(17*u,4*u, 13*u,21*u);
+  ctx.lineTo(-13*u,21*u);
+  ctx.quadraticCurveTo(-17*u,2*u, -13*u,-18*u);
+  ctx.closePath(); ctx.fill();
+  /* 손가락 : 그립을 안쪽으로 감쌈 */
+  for(let i=0;i<4;i++){
+    const fy=(-19+i*10.5)*u, fw=(20-i*1.2)*u;
+    ctx.fillStyle= i%2? blue : "#2b52d8";
+    rr(-fw, fy, fw+6*u, 9*u, 4.5*u); ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,.14)";
+    rr(-fw+1.5*u, fy+1.2*u, fw*0.55, 2.6*u, 1.3*u); ctx.fill();
+    ctx.fillStyle="rgba(0,0,0,.30)";
+    rr(-fw, fy+7*u, fw+6*u, 2*u, 1*u); ctx.fill();
+  }
+  /* 엄지 */
+  ctx.fillStyle=dark;
+  ctx.beginPath(); ctx.ellipse(2*u,-20*u, 11*u, 5.6*u, -0.32, 0, 6.2832); ctx.fill();
+  ctx.fillStyle="rgba(255,255,255,.12)";
+  ctx.beginPath(); ctx.ellipse(2*u,-21.5*u, 8*u, 2*u, -0.32, 0, 6.2832); ctx.fill();
+  /* 로고 */
+  ctx.fillStyle="rgba(255,255,255,.5)"; ctx.font="800 "+(5*u)+"px "+FONT();
+  ctx.textAlign="center"; ctx.fillText("IR", 2*u, 12*u);
+  ctx.restore();
 }
 
 /* ------------------------------ 미니맵 ------------------------------ */
@@ -1229,9 +1700,9 @@ function mapBounds(){
   MAP={minx:a,maxx:b,miny:c,maxy:d};
 }
 function drawMinimap(){
-  if(W<640) return;
-  const bw=Math.min(W*0.15,170), pad=14;
-  const x0=W-bw-pad, y0=pad+8, bh=bw*1.12;
+  if(W<760) return;
+  const bw=Math.min(W*0.115,140), pad=16;
+  const bh=bw*1.12, x0=W-bw-pad, y0=H-bh-pad-14;
   ctx.save();
   ctx.fillStyle="rgba(5,8,18,.55)"; rr(x0-8,y0-8,bw+16,bh+16,12); ctx.fill();
   ctx.strokeStyle="rgba(120,180,255,.18)"; ctx.lineWidth=1; rr(x0-8,y0-8,bw+16,bh+16,12); ctx.stroke();
@@ -1295,13 +1766,15 @@ function relDist(a,b){ const L=TOTAL_SEG*SEGLEN; let d=(a-b)%L;
 
 function newP(){
   return {pos:0,x:0,speed:0,sky:0,lap:1,lapTime:0,total:0,last:0,
-    coins:0,combo:0,maxCombo:0,correct:0,wrong:0,tyre:1,penalty:0,
-    gear:"1",rpm:0,steerV:0,mirrorCar:0,pitDone:false,offT:0};
+    coins:0,combo:0,maxCombo:0,correct:0,wrong:0,tyre:1,penalty:0,byTier:{1:0,2:0,3:0},qNo:0,
+    gear:"1",rpm:0,steerV:0,mirrorCar:0,pitDone:false,offT:0,rank:1};
 }
 function startRace(){
   initAudio(); SPEC=carSpec(); P=newP();
   P.speed=SPEC.maxSpeed*0.30;
-  RIVALS=[]; qPool=[]; nextSpawnT=1.2; phase=0; pitMode="out"; state="pitout"; $("#hud").classList.add("pit");
+  RIVALS=[]; qPool=[]; nextSpawnT=1.2; phase=0; pitMode="out"; state="pitout";
+  dHist=[]; renderBoosts(); shufflePool(1); shufflePool(2); shufflePool(3);
+  $("#hud").classList.add("pit");
   $("#garage").classList.add("hidden"); $("#garage").classList.remove("on");
   $("#hud").classList.remove("hidden");
   $("#modal").classList.add("hidden");
@@ -1316,19 +1789,19 @@ function backToGarage(){
   renderGarageUI();
 }
 
-/* ---- 문제 뽑기 (한 바퀴에 중복 없이) ---- */
-function pickQuestion(){
-  if(!qPool.length){ qPool=QUESTIONS.slice(); 
-    for(let i=qPool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=qPool[i]; qPool[i]=qPool[j]; qPool[j]=t; } }
-  return qPool.pop();
+/* ---- 문제 뽑기 (난이도 가중 추첨 · 난이도별 풀에서 중복 없이) ---- */
+function pickQuestion(lap){
+  const d=pickTier(lap||1);
+  if(!POOL[d] || !POOL[d].length) shufflePool(d);
+  return POOL[d].pop();
 }
 function spawnRival(){
-  const q=pickQuestion();
+  const q=pickQuestion(P?P.lap:1);
   const leftIsCorrect = Math.random()<0.5;
   const pos=(P.pos + 380*UPM) % (TOTAL_SEG*SEGLEN);
   RIVALS.push({
     pos:pos, seg:Math.floor(pos/SEGLEN)%TOTAL_SEG, x:0,
-    speed:SPEC.maxSpeed*0.40, q:q.q,
+    speed:SPEC.maxSpeed*0.40, q:q.q, d:q.d, coin:TIER[q.d].coin,
     optL: leftIsCorrect? q.correct : q.wrong,
     optR: leftIsCorrect? q.wrong   : q.correct,
     ans : leftIsCorrect? "L":"R",
@@ -1338,26 +1811,42 @@ function spawnRival(){
 }
 function activeRival(){ for(const c of RIVALS) if(!c.done && relDist(c.pos,P.pos)>-400) return c; return null; }
 
-function showToast(html, col){ const t=$("#toast"); t.innerHTML=html; t.style.color=col; toastT=1.8; }
+function showToast(html, col){ const t=$("#toast"); t.innerHTML=html; t.style.color=col; toastT=1.9; }
 function showQuiz(c){
-  $("#qText").textContent=c.q; $("#optL").textContent=c.optL; $("#optR").textContent=c.optR;
-  $("#quizBox").classList.remove("hidden");
+  const t=TIER[c.d];
+  $("#qText").textContent=c.q;
+  $("#optL").textContent=c.optL; $("#optR").textContent=c.optR;
+  const lvl=$("#qLvl"); lvl.textContent=t.name+" 문제"; lvl.style.background=t.col;
+  $("#qRw").textContent="정답 시 +"+Math.round(c.coin*SPEC.coinMul)+" 코인";
+  $("#qBar").classList.remove("hidden");
+  $("#optLeft").classList.remove("hidden"); $("#optRight").classList.remove("hidden");
+  P.qNo++;
 }
-function hideQuiz(){ $("#quizBox").classList.add("hidden"); }
+function hideQuiz(){ ["#qBar","#optLeft","#optRight"].forEach(id=>{
+  const el=$(id); if(el){ el.classList.add("hidden"); el.classList.remove("aim"); } }); }
+function flashOpt(side){
+  const el=$(side==="L"? "#optLeft":"#optRight"); if(!el) return;
+  el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit");
+}
 
 function resolveOvertake(c, side){
   c.done=true;
+  const tier=TIER[c.d];
   if(side===c.ans){
-    const gain=Math.round((100+Math.min(P.combo,6)*20)*SPEC.coinMul/10)*10;
+    const bonus=1+Math.min(P.combo,6)*0.10;
+    const gain=Math.round(c.coin*bonus*SPEC.coinMul/10)*10;
     P.coins+=gain; P.correct++; P.combo++; P.maxCombo=Math.max(P.maxCombo,P.combo);
-    showToast("정답! <small>+"+gain+" 임팩트 코인 · "+(side==="L"?"왼쪽":"오른쪽")+" 추월 성공</small>","#3ce08f");
-    beep(880,0.09); setTimeout(()=>beep(1320,0.12),90);
+    P.byTier[c.d]=(P.byTier[c.d]||0)+1;
+    showToast("정답! <small>"+tier.name+" +"+gain+" 임팩트 코인"+
+      (P.combo>1? " · "+P.combo+"연속 보너스":"")+"</small>", tier.col);
+    beep(760+c.d*120,0.09); setTimeout(()=>beep(1180+c.d*140,0.12),90);
   }else{
     P.wrong++; P.combo=0; P.penalty=3.0;
     const why = side==="C" ? "상대차와 접촉!" : "오답!";
     showToast(why+" <small>3초 감속 페널티 · 정답은 "+(c.ans==="L"?"왼쪽":"오른쪽")+" ("+(c.ans==="L"?c.optL:c.optR)+")</small>","#ff5a5a");
     beep(180,0.28,"sawtooth");
   }
+  if(side!=="C") flashOpt(side);
   hideQuiz();
   nextSpawnT=2.6;
 }
@@ -1404,7 +1893,7 @@ function updateRace(dt){
   if(P.pos<before){                     /* 결승선 통과 */
     P.last=P.lapTime;
     if(!SAVE.best || P.last<SAVE.best){ SAVE.best=P.last; save(); }
-    P.lapTime=0; P.lap++;
+    P.lapTime=0; P.lap++; dHist=[];
     beep(660,0.12);
     if(P.lap>LAPS){ finishRace(); return; }
     if(P.lap===PIT_LAP+1 && !P.pitDone){ enterPit(); return; }
@@ -1431,9 +1920,11 @@ function updateRace(dt){
     if(rel<-260*UPM || rel>640*UPM) RIVALS.splice(i,1);
   }
   const act=activeRival();
-  if(act && !act.done){ if($("#quizBox").classList.contains("hidden")) showQuiz(act);
+  if(act && !act.done){ if($("#qBar").classList.contains("hidden")) showQuiz(act);
     $("#qDist").textContent=Math.max(0,Math.round(relDist(act.pos,P.pos)/UPM))+" m"; }
   else if(!act) hideQuiz();
+  /* 순위 : 아직 추월하지 못한 상대차 수 + 1 */
+  P.rank = 1 + RIVALS.filter(c=>!c.done && relDist(c.pos,P.pos)>0).length;
 
   /* 백미러 차량 */
   const behind=RIVALS.find(c=>{const r=relDist(c.pos,P.pos); return r<0 && r>-90*UPM;});
@@ -1461,6 +1952,10 @@ function finishRace(){
       "<div><small>베스트 랩</small><b>"+fmtTime(SAVE.best)+"</b></div>"+
       "<div><small>정답</small><b style='color:var(--green)'>"+P.correct+"</b></div>"+
       "<div><small>오답</small><b style='color:var(--red)'>"+P.wrong+"</b></div>"+
+      "<div><small>난이도별 정답</small><b style='font-size:13px;white-space:nowrap'>"+
+        "<span style='color:#3ce08f'>초 "+(P.byTier[1]||0)+"</span> · "+
+        "<span style='color:#ffc83d'>중 "+(P.byTier[2]||0)+"</span> · "+
+        "<span style='color:#ff5a9e'>고 "+(P.byTier[3]||0)+"</span></b></div>"+
       "<div><small>정답률</small><b>"+acc+"%</b></div>"+
       "<div><small>획득 코인</small><b style='color:var(--gold)'>"+P.coins+"</b></div>"+
     "</div>"+
@@ -1485,16 +1980,16 @@ function frame(t){
   else if(state==="pitout"){
     phase+=dt/3.4;
     drawPit(dt,"out",phase, phase>0.2);
-    banner("PIT LANE · 3인칭 시점", "8번 개러지에서 출발합니다 — 지역상생 피트크루가 배웅합니다");
+    banner("PIT LANE · 오버헤드 시점", "개러지에서 출발합니다 — 지역상생 피트크루가 배웅합니다");
     updateHUD();
     if(phase>=1){ state="race"; $("#hud").classList.remove("pit"); showToast("GO!<small>상대차의 선지를 읽고 올바른 방향으로 추월하세요</small>","#3ce08f"); }
   }
   else if(state==="pitstop"){
     phase+=dt/Math.max(1.2,SPEC.pitTime);
     drawPit(dt,"stop",phase,false);
-    banner("PIT STOP · 3인칭 시점", "공정무역 타이어 교체 중 · 크루 레벨 "+lv("crew")+" / "+MAXLV+
+    banner("PIT STOP · 오버헤드 시점", "공정무역 타이어 교체 중 · 크루 레벨 "+lv("crew")+" / "+MAXLV+
            "  ("+SPEC.pitTime.toFixed(1)+"s)");
-    P.total+=dt; P.lapTime+=dt; updateHUD();
+    P.total+=dt; P.lapTime+=dt; updateHUD(dt);
     if(phase>=1){ P.tyre=1; P.speed=SPEC.maxSpeed*0.28; state="race"; $("#hud").classList.remove("pit");
       showToast("타이어 교체 완료! <small>트랙 복귀</small>","#25e7ff"); }
   }
@@ -1504,7 +1999,7 @@ function frame(t){
     if(shakeT>0){ shakeT-=dt; ctx.translate(rnd(-4,4),rnd(-3,3)); }
     drawSkyline(); renderRoad(); ctx.restore();
     drawCockpit(); drawMinimap();
-    updateHUD();
+    updateHUD(dt);
   }
   /* 토스트 페이드 */
   if(toastT>0){ toastT-=dt; $("#toast").style.opacity=clamp(toastT,0,1); }
@@ -1520,26 +2015,77 @@ function banner(t1,t2){
   ctx.fillStyle="rgba(210,225,245,.8)"; ctx.font="600 "+Math.round(W*0.011)+"px "+FONT();
   ctx.fillText(t2, W/2, H*0.06+50);
 }
-function updateHUD(){
-  $("#hLap").textContent=Math.min(P.lap,LAPS)+"/"+LAPS;
-  $("#hTime").textContent=fmtTime(P.lapTime);
-  $("#hLast").textContent=P.last? fmtTime(P.last):"--";
-  $("#hCoin").textContent=P.coins;
-  $("#hCombo").textContent=P.combo+"연속";
-  $("#hSpeed").textContent=Math.round(P.speed/UPM*3.6);
-  $("#hGear").textContent=P.gear;
-  const tp=Math.round(P.tyre*100);
-  $("#hTyre").style.width=tp+"%";
-  $("#hTyre").style.background = tp>60? "linear-gradient(90deg,#25e7ff,#3ce08f)"
-                              : tp>45? "linear-gradient(90deg,#ffc83d,#ff9f1a)" : "linear-gradient(90deg,#ff5a5a,#ff2d46)";
-  $("#hTyreV").textContent=tp+"%";
+const TARGET_LAP = 80.0;                 /* 목표 랩타임 (딜타 기준) */
+const fmtClock=(s)=>{ const m=Math.floor(s/60), r=Math.floor(s-m*60);
+  return m+":"+(r<10?"0":"")+r; };
+function lapDelta(){
+  const prog=P.pos/(TOTAL_SEG*SEGLEN);
+  return P.lapTime - TARGET_LAP*prog;
+}
+/* 딜타 그래프 (상단 중앙) */
+let dHist=[], dAcc=0;
+function drawDelta(d,dt){
+  const cv2=$("#deltaCv"); if(!cv2) return;
+  const g2=cv2.getContext("2d"), w=cv2.width, h=cv2.height;
+  dAcc+=dt||0;
+  if(dAcc>0.12){ dAcc=0; dHist.push(d); if(dHist.length>90) dHist.shift(); }
+  g2.clearRect(0,0,w,h);
+  const bg=g2.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,"rgba(46,224,138,.55)"); bg.addColorStop(.42,"rgba(24,42,64,.72)");
+  bg.addColorStop(.58,"rgba(24,42,64,.72)"); bg.addColorStop(1,"rgba(214,60,52,.55)");
+  g2.fillStyle=bg; g2.fillRect(0,0,w,h);
+  const pg=g2.createLinearGradient(0,0,w,0);
+  pg.addColorStop(0,"rgba(126,56,190,.55)"); pg.addColorStop(.5,"rgba(126,56,190,0)");
+  g2.fillStyle=pg; g2.fillRect(0,0,w,h);
+  g2.strokeStyle="rgba(255,255,255,.35)"; g2.lineWidth=2;
+  g2.beginPath(); g2.moveTo(0,h/2); g2.lineTo(w,h/2); g2.stroke();
+  const sc=h/2/1.6;
+  g2.strokeStyle="#fff"; g2.lineWidth=4; g2.lineJoin="round"; g2.beginPath();
+  dHist.forEach((v,i)=>{ const x=i/Math.max(1,89)*w, y=clamp(h/2+v*sc,4,h-4);
+    i? g2.lineTo(x,y):g2.moveTo(x,y); });
+  g2.stroke();
+  const cx2=Math.max(6,(dHist.length-1)/89*w), cy2=clamp(h/2+d*sc,6,h-6);
+  const col = d<=0? "#3ce08f":"#ff5a5a";
+  const gl=g2.createRadialGradient(cx2,cy2,0,cx2,cy2,16);
+  gl.addColorStop(0,col); gl.addColorStop(1,"rgba(0,0,0,0)");
+  g2.fillStyle=gl; g2.beginPath(); g2.arc(cx2,cy2,16,0,6.2832); g2.fill();
+  g2.fillStyle=col; g2.beginPath(); g2.arc(cx2,cy2,7,0,6.2832); g2.fill();
+}
+/* 좌하단 임팩트 부스트 목록 */
+function renderBoosts(){
+  const box=$("#boostList"); if(!box) return;
+  const list=UPGRADES.map(u=>({u:u,l:lv(u.id)})).sort((a,b)=>b.l-a.l).slice(0,3);
+  box.innerHTML=list.map((x,i)=>{
+    const on=(i===0 && x.l>0);
+    return "<div class='bi"+(on?" on":"")+"'>"+x.u.short+" Lv"+x.l+(on?"<span>✓</span>":"")+"</div>";
+  }).join("");
+}
+function updateHUD(dt){
+  $("#hLapN").textContent=Math.min(P.lap,LAPS); $("#hLapT").textContent=LAPS;
+  $("#hLapTime").textContent=fmtTime(P.lapTime);
+  $("#hLapTime2").textContent=fmtTime(P.lapTime);
+  $("#hTimer").textContent=fmtClock(P.total);
+  $("#hPos").textContent="P"+P.rank; $("#hPosN").textContent=P.rank;
+  $("#hQn").textContent=P.correct; $("#hQt").textContent=P.qNo;
+  $("#hTarget").textContent=fmtTime(TARGET_LAP);
+  $("#hLapBadge").textContent="L"+Math.min(P.lap,LAPS);
+  const d=lapDelta();
+  $("#hDelta").textContent=(d>=0?"+":"")+d.toFixed(3)+" Sec.";
+  $("#hDeltaRow").classList.toggle("slow", d>0);
+  drawDelta(d,dt||0);
   const pen=$("#penalty");
   if(P.penalty>0){ pen.classList.remove("hidden"); $("#penT").textContent=P.penalty.toFixed(1); }
   else pen.classList.add("hidden");
   const prog=(P.pos/(TOTAL_SEG*SEGLEN));
   let name=SECTORS[0][1];
-  for(const s of SECTORS) if(prog>=s[0]) name=s[1];
+  for(const sc of SECTORS) if(prog>=sc[0]) name=sc[1];
   $("#sector").textContent=name;
+  /* 현재 조준 중인 선지 강조 */
+  const act=activeRival();
+  if(act){
+    $("#optLeft").classList.toggle("aim", P.x<-0.12);
+    $("#optRight").classList.toggle("aim", P.x> 0.12);
+  }
 }
 
 /* =========================================================================
@@ -1633,9 +2179,12 @@ $("#btnHelp").onclick=()=>{
      "<span class='kbd'>↓</span>/<span class='kbd'>S</span> 브레이크, "+
      "<span class='kbd'>←</span><span class='kbd'>→</span> 조향, "+
      "<span class='kbd'>ESC</span> 레이스 종료(획득 코인은 유지)</li>"+
-   "<li><b>시점</b> — 차고와 피트스탑은 <b>3인칭</b>, 주행 중에는 <b>1인칭 콕핏</b> 시점입니다.</li>"+
-   "<li><b>퀴즈 추월</b> — 앞차 좌·우에 선지가 뜹니다. <b>정답이 적힌 쪽으로 추월</b>하세요.</li>"+
-   "<li><b>정답</b> — 임팩트 코인 지급(연속 정답 보너스). <b>오답·접촉</b> — <b>3초간 감속 페널티</b>.</li>"+
+   "<li><b>시점</b> — 차고는 3인칭, 피트스탑은 <b>오버헤드(위에서 본) 시점</b>, 주행 중에는 <b>1인칭 콕핏</b> 시점입니다.</li>"+
+   "<li><b>퀴즈 추월</b> — 화면 <b>양쪽 끝</b>에 선지가 뜹니다. <b>정답이 적힌 쪽으로 추월</b>하세요.</li>"+
+   "<li><b>난이도</b> — <b style='color:#3ce08f'>초급 +80</b> / <b style='color:#ffc83d'>중급 +170</b> / "+
+     "<b style='color:#ff5a9e'>고급 +300</b> 코인. 랩이 진행될수록 어려운 문제가 많이 나옵니다."+
+     " 연속 정답 시 최대 +60% 보너스.</li>"+
+   "<li><b>오답·접촉</b> — <b>3초간 감속 페널티</b>(안전망 업그레이드로 감속 폭을 줄일 수 있음).</li>"+
    "<li><b>코인</b> — 차고에서 사회적 가치가 담긴 부품에 재투자하면 성능이 좋아집니다.</li>"+
    "<li><b>레이스</b> — 총 "+LAPS+"랩. 2랩을 마치면 의무 피트스탑(3인칭)에서 타이어를 교체합니다.</li>"+
    "<li><b>타이어</b> — 마모될수록 그립이 떨어집니다. 트랙을 벗어나면 크게 감속합니다.</li>"+
